@@ -1654,12 +1654,10 @@
           <div class="spacer"></div>
           <button class="btn btn-secondary btn-sm" onclick="pfOpen('documents')"><span class="icon" data-icon="edit"></span>Manage</button>
         </div>
-        <div class="callout callout-info" style="margin-bottom:16px">
-          <span class="icon" data-icon="eye"></span>
-          <span>Documents are stored securely in the employee record. Upload a new file to update the current document.</span>
-        </div>
+       
         <div class="sub-head">Uploaded documents</div>
         <div class="table-wrap">
+          <table class="table">
           <table class="table">
             <thead>
               <tr><th>Document</th><th>Type</th><th>Current document</th><th>Uploaded by</th><th>Actions</th></tr>
@@ -1667,7 +1665,11 @@
             <tbody id="docBody">
               <tr data-doc="identity">
                 <td class="cell-strong">Identity</td>
-                <td><span class="badge b-indigo">Aadhaar</span></td>
+                <td>
+                  <select class="select" style="min-width:130px">
+                    <option selected>Aadhaar</option><option>PAN</option><option>Passport</option>
+                  </select>
+                </td>
                 <td id="latest-identity"><span class="cell-strong">aadhaar_v3.pdf</span> <span class="doc-empty" style="font-size:12px">· 14 Jan 2026</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1678,7 +1680,11 @@
               </tr>
               <tr data-doc="education">
                 <td class="cell-strong">Education certificates</td>
-                <td><span class="badge b-indigo">Post Graduate</span></td>
+                <td>
+                  <select class="select" style="min-width:130px">
+                    <option>Undergraduate</option><option selected>Post Graduate</option>
+                  </select>
+                </td>
                 <td id="latest-education"><span class="cell-strong">mba_degree.pdf</span> <span class="doc-empty" style="font-size:12px">· 02 Jul 2024</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1689,7 +1695,7 @@
               </tr>
               <tr data-doc="offer">
                 <td class="cell-strong">Offer / increment letter</td>
-                <td><span class="badge b-indigo">Offer Letter</span></td>
+                <td><span class="doc-empty">–</span></td>
                 <td id="latest-offer"><span class="cell-strong">increment_2026.pdf</span> <span class="doc-empty" style="font-size:12px">· 01 Apr 2026</span></td>
                 <td>HR · Mayank K.</td>
                 <td class="actions">
@@ -1700,7 +1706,11 @@
               </tr>
               <tr data-doc="form16">
                 <td class="cell-strong">Form 16</td>
-                <td><span class="badge b-indigo">Form 16</span></td>
+                <td>
+                  <select class="select" style="min-width:130px">
+                    <option>FY 2023-24</option><option>FY 2024-25</option><option selected>FY 2025-26</option>
+                  </select>
+                </td>
                 <td id="latest-form16"><span class="cell-strong">form16_fy2526.pdf</span> <span class="doc-empty" style="font-size:12px">· 20 May 2026</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1711,7 +1721,7 @@
               </tr>
               <tr data-doc="shares">
                 <td class="cell-strong">Employee shares</td>
-                <td><span class="badge b-indigo">Employee Shares / ESOP</span></td>
+                <td><span class="doc-empty">–</span></td>
                 <td id="latest-shares"><span class="cell-strong">esop_grant_2024.pdf</span> <span class="doc-empty" style="font-size:12px">· 12 Aug 2024</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1738,9 +1748,6 @@
             </thead>
             <tbody>
               <tr>
-                <td>
-                  <input type="text" class="input" id="inlineDocTitle" placeholder="e.g. Aadhaar Card 2026..." style="min-width:180px" />
-                </td>
                 <td>
                   <select class="select" id="newDocType" style="min-width:160px">
                     <optgroup label="Identity Proofs">
@@ -3498,12 +3505,10 @@ function onInlineFileSelected(input) {
 }
 
 function saveInlineDoc() {
-  var titleInput = document.getElementById('inlineDocTitle');
   var typeSel = document.getElementById('newDocType');
-  var docName = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : '';
-  var docType = typeSel ? typeSel.value : '';
+  var docName = typeSel ? typeSel.value : '';
 
-  if (!docName) { toast('Please enter a document name'); return; }
+  if (!docName) { toast('Please select a document type'); return; }
   if (!INLINE_SELECTED_FILE) { toast('Please select a file to upload'); return; }
 
   var filename = INLINE_SELECTED_FILE.name;
@@ -3516,7 +3521,7 @@ function saveInlineDoc() {
   if (docBody) {
     var tr = document.createElement('tr');
     tr.innerHTML = '<td class="cell-strong">' + escapeHtml(docName) + '</td>' +
-      '<td><span class="badge b-indigo">' + escapeHtml(docType) + '</span></td>' +
+      '<td><span class="badge b-indigo">' + escapeHtml(docName) + '</span></td>' +
       '<td><span class="cell-strong">' + escapeHtml(filename) + '</span>' + (INLINE_SELECTED_FILE ? ('<br/><span style="font-size:11.5px;color:var(--text-3)">' + (INLINE_SELECTED_FILE.size / (1024 * 1024)).toFixed(2) + ' MB</span>') : '') + '</td>' +
       '<td>' + escapeHtml(uploadedBy) + '</td>' +
       '<td class="actions">' +
@@ -3528,7 +3533,6 @@ function saveInlineDoc() {
   }
 
   // Reset form
-  if (titleInput) titleInput.value = '';
   INLINE_SELECTED_FILE = null;
   var fileInput = document.getElementById('inlineDocFileInput');
   if (fileInput) fileInput.value = '';
