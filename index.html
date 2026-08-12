@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PeopleDesk · Employee Record (Prototype)</title>
+<!--
+  THESIS: an Operate-mode employee profile prototype that proves every field in the proto brief is findable and role-aware; it refuses the inert "one giant form" page by splitting the record into eight task tabs and a live Employee / Supervisor permission toggle.
+  OWN-WORLD: clean light SaaS: warm white surfaces, slate ink, indigo accent, 1px borders, one soft elevation step; forms and tables in a strict 8px rhythm, all icons drawn in one 24px/1.5 stroke.
+  STORY: whoever opens it (employee or supervisor) understands which data they may touch, what the record holds, and how salary and service years compute.
+  FIRST VIEWPORT: top app bar with a segmented role toggle; employee identity strip with a Permanent/Part-time flag; a sticky eight-tab bar; the active tab's form grid immediately below.
+  FORM: canon SaaS dashboard, position 1, seed canon-saas.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md.
+-->
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --surface-3: #f0f1f4;
+    --border: #e5e7ec;
+    --border-strong: #d3d7df;
+    --text: #101828;
+    --text-2: #475467;
+    --text-3: #667085;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-soft: #eef2ff;
+    --accent-soft-2: #e0e7ff;
+    --accent-ink: #3730a3;
+    --success: #15803d;
+    --success-soft: #ecfdf3;
+    --warning: #b45309;
+    --warning-soft: #fffaeb;
+    --danger: #b42318;
+    --danger-soft: #fef3f2;
+    --info-soft: #eff8ff;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 2px rgba(16, 24, 40, .06);
+    --shadow-md: 0 8px 24px -6px rgba(16, 24, 40, .12);
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; padding: 0; }
+
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft-2); color: var(--text); }
+  input, textarea, select { caret-color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .icon { width: 20px; height: 20px; flex: none; }
+  .icon svg { display: block; width: 100%; height: 100%; }
+
+  /* ---------- App bar ---------- */
+  .app-bar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px; height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: #fff; display: grid; place-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .brand-mark .icon { width: 16px; height: 16px; }
+  .brand .proto-tag {
+    font-size: 10.5px; font-weight: 600; color: var(--accent-ink);
+    background: var(--accent-soft); border: 1px solid var(--accent-soft-2);
+    padding: 2px 7px; border-radius: 999px; letter-spacing: .02em;
+  }
+
+  .search { flex: 1; max-width: 420px; position: relative; color: var(--text-3); }
+  .search .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; }
+  .search input {
+    width: 100%; height: 38px; padding: 0 14px 0 38px;
+    border: 1px solid var(--border-strong); border-radius: 999px;
+    background: var(--surface-2); font: inherit; font-size: 13.5px; color: var(--text);
+  }
+  .search input::placeholder { color: var(--text-3); }
+
+  .app-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  /* Segmented control */
+  .seg {
+    display: inline-flex; padding: 3px; gap: 2px;
+    background: var(--surface-3); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .seg button {
+    border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 600;
+    color: var(--text-3); padding: 6px 14px; border-radius: 8px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; transition: all .15s ease;
+  }
+  .seg button:hover { color: var(--text-2); }
+  .seg button[aria-pressed="true"] {
+    background: var(--surface); color: var(--text);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  }
+  .seg button .icon { width: 15px; height: 15px; }
+
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px;
+    border: 1px solid var(--border-strong); background: var(--surface);
+    display: grid; place-items: center; color: var(--text-2); cursor: pointer;
+    position: relative; transition: background .15s ease, border-color .15s ease;
+  }
+  .icon-btn:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .icon-btn .dot {
+    position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); border: 1.5px solid var(--surface);
+  }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%; overflow: hidden;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff; display: grid; place-items: center;
+    font-weight: 700; font-size: 13px; border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--border-strong);
+  }
+
+  /* Role notice */
+  .role-notice {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 24px; font-size: 12.5px; color: var(--text-2);
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .role-notice .pill {
+    font-weight: 600; padding: 2px 9px; border-radius: 999px; font-size: 11px; letter-spacing: .02em;
+  }
+  .role-notice .pill.pill-sup { color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--accent-soft-2); }
+  .role-notice .pill.pill-emp { color: var(--warning); background: var(--warning-soft); border: 1px solid #fde68a; }
+
+  /* ---------- Employee strip ---------- */
+  .main { max-width: 1200px; margin: 0 auto; padding: 20px 24px 72px; }
+  .emp-strip {
+    display: flex; align-items: center; gap: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .emp-avatar { width: 62px; height: 62px; border-radius: 14px; flex: none; position: relative; }
+  .emp-avatar .avatar-lg { width: 62px; height: 62px; font-size: 20px; border-radius: 14px; border: 0; box-shadow: none; }
+  .emp-status {
+    position: absolute; right: -3px; bottom: -3px; width: 15px; height: 15px;
+    border-radius: 50%; background: var(--success); border: 2.5px solid var(--surface);
+  }
+  .emp-main { min-width: 0; }
+  .emp-name-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .emp-name { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+  .badge-role { font-size: 12px; font-weight: 600; color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--accent-soft-2); border-radius: 999px; padding: 2px 10px; }
+  .emp-meta { margin-top: 3px; color: var(--text-2); font-size: 13.5px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .emp-meta .sep { color: var(--border-strong); }
+  .emp-sub { margin-top: 8px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-3); }
+  .emp-sub .k { color: var(--text-3); }
+  .emp-sub .v { color: var(--text); font-weight: 600; }
+
+  .emp-side { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+  .flag-group { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--text-2); }
+  .flag-group .flag-val { font-weight: 700; color: var(--success); }
+  .flag-group .flag-val.part { color: var(--warning); }
+
+  /* Switch */
+  .switch { position: relative; display: inline-block; width: 40px; height: 23px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .track {
+    position: absolute; inset: 0; cursor: pointer; border-radius: 999px;
+    background: var(--border-strong); transition: background .18s ease;
+  }
+  .switch .track::after {
+    content: ""; position: absolute; top: 2.5px; left: 3px; width: 18px; height: 18px;
+    border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(16,24,40,.25);
+    transition: transform .18s ease;
+  }
+  .switch input:checked + .track { background: var(--accent); }
+  .switch input:checked + .track::after { transform: translateX(16px); }
+  .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .strip-actions { display: flex; gap: 8px; }
+  .status-tag { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    position: sticky; top: 60px; z-index: 30;
+    display: flex; gap: 2px; overflow-x: auto;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-top: 16px; padding: 4px 6px;
+    box-shadow: var(--shadow-sm);
+  }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 600;
+    color: var(--text-3); padding: 9px 14px; border-radius: 9px; cursor: pointer;
+    white-space: nowrap; transition: all .15s ease;
+  }
+  .tab:hover { color: var(--text-2); background: var(--surface-2); }
+  .tab[aria-selected="true"] { color: var(--accent-ink); background: var(--accent-soft); }
+  .tab .icon { width: 16px; height: 16px; }
+
+  /* ---------- Panels ---------- */
+  .panel { display: none; margin-top: 18px; }
+  .panel.active { display: block; animation: fade .22s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .section + .section { margin-top: 18px; }
+  .section-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+  .section-head .head-icon {
+    width: 36px; height: 36px; flex: none; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent-ink);
+    display: grid; place-items: center;
+  }
+  .section-head .head-icon .icon { width: 18px; height: 18px; }
+  .section-head h2 { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+  .section-head p { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+  .section-head .spacer { flex: 1; }
+
+  .form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 18px; }
+  .form-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field .field-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+  .field .field-label .req { color: var(--danger); }
+  .field .hint { font-size: 12px; color: var(--text-3); font-weight: 400; }
+
+  .input, .select, .textarea {
+    width: 100%; font: inherit; font-size: 13.5px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); padding: 8px 11px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .textarea { resize: vertical; min-height: 76px; line-height: 1.55; }
+  .input:hover, .select:hover, .textarea:hover { border-color: #b6bcc9; }
+  .input:focus, .select:focus, .textarea:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .input:disabled, .select:disabled, .textarea:disabled {
+    background: var(--surface-3); color: var(--text-3); cursor: not-allowed;
+  }
+  .input.is-mono { font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+  .select { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 34px; }
+  .select:disabled { background-image: none; }
+
+  .field-wrap { position: relative; }
+  .field-wrap .prefix {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    font-size: 13.5px; font-weight: 600; color: var(--text-3); pointer-events: none;
+  }
+  .field-wrap .prefix + .input { padding-left: 32px; }
+
+  .sub-head { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); margin: 20px 0 12px; }
+  .section > .sub-head:first-of-type { margin-top: 0; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: inherit; font-size: 13px; font-weight: 600;
+    padding: 8px 14px; border-radius: 9px; border: 1px solid transparent;
+    cursor: pointer; transition: all .15s ease; white-space: nowrap;
+  }
+  .btn .icon { width: 16px; height: 16px; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: var(--shadow-sm); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+  .btn-secondary:hover { background: var(--surface-2); border-color: #b6bcc9; }
+  .btn-ghost { background: transparent; color: var(--accent); }
+  .btn-ghost:hover { background: var(--accent-soft); }
+  .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: #fecdca; }
+  .btn-danger:hover { background: #fee4e2; }
+  .btn-sm { padding: 5px 10px; font-size: 12.5px; border-radius: 8px; }
+
+  /* Tables */
+  .table-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .table th {
+    text-align: left; font-size: 11.5px; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-3);
+    background: var(--surface-2); padding: 10px 14px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-2); }
+  .table tbody tr:last-child td { border-bottom: 0; }
+  .table tbody tr:hover { background: var(--surface-2); }
+  .table .cell-strong { color: var(--text); font-weight: 600; }
+  .table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .table .actions { white-space: nowrap; text-align: right; }
+  .table .actions .btn { padding: 4px 8px; font-size: 12px; }
+  .table .input, .table .select { padding: 6px 9px; font-size: 13px; border-radius: 7px; min-width: 0; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 600; padding: 2.5px 9px; border-radius: 999px;
+    white-space: nowrap; border: 1px solid transparent;
+  }
+  .badge .icon { width: 12px; height: 12px; }
+  .b-indigo { color: var(--accent-ink); background: var(--accent-soft); border-color: var(--accent-soft-2); }
+  .b-green { color: var(--success); background: var(--success-soft); border-color: #bbf7d0; }
+  .b-amber { color: var(--warning); background: var(--warning-soft); border-color: #fde68a; }
+  .b-red { color: var(--danger); background: var(--danger-soft); border-color: #fecdca; }
+  .b-gray { color: var(--text-2); background: var(--surface-3); border-color: var(--border-strong); }
+
+  /* Callouts */
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.55;
+  }
+  .callout .icon { width: 17px; height: 17px; margin-top: 1px; flex: none; }
+  .callout-info { background: var(--info-soft); color: #075985; }
+  .callout-warn { background: var(--warning-soft); color: #92400e; border: 1px solid #fde68a; }
+  .callout-sec { background: var(--success-soft); color: #14532d; border: 1px solid #bbf7d0; }
+
+  /* Chips (skills) */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--surface-2); border: 1px solid var(--border-strong);
+    color: var(--text-2); font-size: 12.5px; font-weight: 500;
+    padding: 5px 10px; border-radius: 999px;
+  }
+  .chip button {
+    border: 0; background: transparent; color: var(--text-3); cursor: pointer;
+    display: grid; place-items: center; padding: 0; border-radius: 50%;
+  }
+  .chip button:hover { color: var(--danger); }
+  .chip button .icon { width: 13px; height: 13px; }
+
+  .inline-add { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
+  .inline-add .input { max-width: 260px; }
+
+  /* KYC */
+  .kyc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 18px; }
+  .kyc-panel {
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+    background: var(--surface-2); position: relative;
+  }
+  .kyc-panel .k { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-3); }
+  .kyc-panel .v { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 4px; letter-spacing: .03em; }
+  .kyc-panel .lock {
+    position: absolute; top: 12px; right: 12px; width: 20px; height: 20px;
+    color: var(--text-3);
+  }
+  .kyc-panel .lock .icon { width: 18px; height: 18px; }
+
+  /* Salary */
+  .sal-lines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 18px; }
+  .sal-item {
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px; background: var(--surface-2);
+  }
+  .sal-item .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .sal-item .lbl { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+  .sal-item .sign { font-size: 13px; font-weight: 700; }
+  .sal-item .sign.plus { color: var(--success); }
+  .sal-item .sign.minus { color: var(--danger); }
+  .sal-item .input { text-align: right; padding-right: 12px; font-weight: 600; }
+  .sal-total {
+    margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--accent); color: #fff; border-radius: 10px; padding: 16px 20px;
+  }
+  .sal-total .lbl { font-size: 13px; font-weight: 600; opacity: .85; display: flex; align-items: center; gap: 8px; }
+  .sal-total .lbl .icon { width: 16px; height: 16px; }
+  .sal-total .amount { font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
+  .sal-total .formula { font-size: 12px; opacity: .75; }
+
+  /* Documents */
+  .doc-version-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-2); }
+  .doc-version-row + .doc-version-row { border-top: 1px dashed var(--border); }
+  .doc-version-row .fname { color: var(--text); font-weight: 600; }
+  .doc-version-row .meta { margin-left: auto; color: var(--text-3); font-size: 12px; white-space: nowrap; }
+  details.versions { position: relative; }
+  details.versions summary {
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12.5px; font-weight: 600; color: var(--accent); padding: 4px 2px;
+  }
+  details.versions summary::-webkit-details-marker { display: none; }
+  details.versions .v-pop {
+    position: absolute; z-index: 20; right: 0; top: 100%; margin-top: 6px;
+    width: 300px; background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: 10px; box-shadow: var(--shadow-md); padding: 8px 14px 10px;
+  }
+  .doc-empty { color: var(--text-3); font-size: 12.5px; font-style: italic; }
+
+  /* Feedback */
+  .fb-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .fb-card + .fb-card { margin-top: 14px; }
+  .fb-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .fb-date { font-size: 12.5px; color: var(--text-3); }
+  .fb-topic { font-size: 14.5px; font-weight: 700; margin-left: 4px; letter-spacing: -.01em; }
+  .fb-head .spacer { flex: 1; }
+  .fb-block { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
+  .fb-role { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+  .fb-role .icon { width: 14px; height: 14px; }
+  .fb-msg { font-size: 13.5px; color: var(--text-2); }
+  .fb-block .textarea { margin-top: 4px; }
+  .fb-foot { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+  .stars { display: inline-flex; gap: 2px; }
+  .stars .star { width: 20px; height: 20px; color: var(--border-strong); background: none; border: 0; padding: 0; cursor: pointer; }
+  .stars .star.on { color: #f59e0b; }
+  .stars .star .icon { width: 20px; height: 20px; }
+  .fb-status { font-size: 12px; font-weight: 700; }
+  .fb-accept { margin-left: auto; display: flex; gap: 8px; }
+
+  /* Role-based visibility */
+  body[data-role="employee"] .only-supervisor { display: none !important; }
+  body[data-role="supervisor"] .only-employee { display: none !important; }
+
+  /* Toast */
+  .toast-wrap {
+    position: fixed; right: 20px; bottom: 20px; z-index: 100;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .toast {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--text); color: #fff; font-size: 13px;
+    padding: 12px 16px; border-radius: 10px; box-shadow: var(--shadow-md);
+    max-width: 340px; animation: toast-in .25s ease;
+  }
+  .toast .icon { width: 16px; height: 16px; margin-top: 1px; color: #6ee7b7; }
+  .toast.out { animation: toast-out .25s ease forwards; }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes toast-out { to { opacity: 0; transform: translateY(6px); } }
+
+  .empty-state {
+    text-align: center; padding: 34px 20px; color: var(--text-3); font-size: 13px;
+  }
+  .empty-state .icon { width: 30px; height: 30px; margin: 0 auto 10px; color: var(--border-strong); }
+  .footer-note { text-align: center; color: var(--text-3); font-size: 12px; margin-top: 30px; }
+
+  @media (max-width: 980px) {
+    .form-grid, .kyc-grid, .sal-lines { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .search { display: none; }
+  }
+  @media (max-width: 760px) {
+    .app-bar { padding: 0 14px; gap: 10px; }
+    .brand .brand-word { display: none; }
+    .main { padding: 14px 12px 60px; }
+    .emp-strip { flex-wrap: wrap; }
+    .emp-side { margin-left: 0; align-items: flex-start; width: 100%; }
+    .form-grid, .kyc-grid, .sal-lines { grid-template-columns: 1fr; }
+    .form-grid.cols-2 { grid-template-columns: 1fr; }
+    .seg button { padding: 6px 10px; }
+    .seg button .seg-word { display: none; }
+    .tabs { top: 60px; }
+    .table-wrap { overflow-x: auto; }
+    .table { min-width: 640px; }
+    .sal-total { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+</style>
+</head>
+<body data-role="supervisor">
+
+<!-- ================= APP BAR ================= -->
+<header class="app-bar">
+  <div class="brand">
+    <span class="brand-mark"><span class="icon" data-icon="users"></span></span>
+    <span class="brand-word">PeopleDesk</span>
+    <span class="proto-tag">Prototype</span>
+  </div>
+
+  <div class="search">
+    <span class="icon" data-icon="search"></span>
+    <input type="search" placeholder="Search employees, PAN, assets…" aria-label="Search" />
+  </div>
+
+  <div class="app-actions">
+    <div class="seg" role="group" aria-label="Switch role">
+      <button id="roleEmployee" aria-pressed="false"><span class="icon" data-icon="user"></span><span class="seg-word">Employee</span></button>
+      <button id="roleSupervisor" aria-pressed="true"><span class="icon" data-icon="shield"></span><span class="seg-word">Supervisor</span></button>
+    </div>
+    <button class="icon-btn" aria-label="Notifications" onclick="toast('No new notifications')"><span class="icon" data-icon="bell"></span><span class="dot"></span></button>
+    <button class="icon-btn" aria-label="Settings" onclick="toast('Settings is out of scope for this prototype')"><span class="icon" data-icon="settings"></span></button>
+    <div class="avatar">AS</div>
+  </div>
+</header>
+
+<div class="role-notice">
+  <span id="rolePill" class="pill pill-sup">Supervisor view</span>
+  <span id="roleText">All tabs editable. You can maintain salary, assign assets, and manage any employee document.</span>
+</div>
+
+<main class="main">
+
+  <!-- ================= EMPLOYEE STRIP ================= -->
+  <section class="emp-strip">
+    <div class="emp-avatar">
+      <div class="avatar avatar-lg">AS</div>
+      <span class="emp-status"></span>
+    </div>
+    <div class="emp-main">
+      <div class="emp-name-row">
+        <span class="emp-name">Ananya Sharma</span>
+        <span class="badge-role">HR Analyst</span>
+        <span class="badge b-green"><span class="icon" data-icon="check"></span>Active</span>
+      </div>
+      <div class="emp-meta">
+        <span>Engineering</span><span class="sep">·</span><span>EMP-0142</span><span class="sep">·</span>
+        <span>Joined 12 Mar 2021</span><span class="sep">·</span><span>Pune, MH</span>
+      </div>
+      <div class="emp-sub">
+        <span><span class="k">Years of service</span> <span class="v" id="yosValue">5y 5m</span></span>
+        <span><span class="k">Reporting to</span> <span class="v">Mayank K. · HR Manager</span></span>
+        <span><span class="k">Cost centre</span> <span class="v">ENG-420</span></span>
+      </div>
+    </div>
+    <div class="emp-side">
+      <div class="flag-group">
+        <span>Employment type</span>
+        <label class="switch" title="Permanent / Part-time flag (Supervisor)">
+          <input type="checkbox" id="permFlag" checked />
+          <span class="track"></span>
+        </label>
+        <span id="flagVal" class="flag-val">Permanent</span>
+      </div>
+      <div class="strip-actions">
+        <button class="btn btn-secondary btn-sm only-supervisor" onclick="toast('Profile overview export (demo)')"><span class="icon" data-icon="download"></span>Export</button>
+        <button class="btn btn-secondary btn-sm" onclick="toast('Editing from the identity strip opens the Personal tab')"><span class="icon" data-icon="edit"></span>Edit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TABS ================= -->
+  <nav class="tabs" role="tablist" aria-label="Employee record sections">
+    <button class="tab active" data-tab="personal" role="tab" aria-selected="true"><span class="icon" data-icon="user"></span>Personal</button>
+    <button class="tab" data-tab="employment" role="tab" aria-selected="false"><span class="icon" data-icon="briefcase"></span>Employment</button>
+    <button class="tab" data-tab="skills" role="tab" aria-selected="false"><span class="icon" data-icon="graduation"></span>Skills &amp; Education</button>
+    <button class="tab" data-tab="assets" role="tab" aria-selected="false"><span class="icon" data-icon="monitor"></span>Assets</button>
+    <button class="tab" data-tab="kyc" role="tab" aria-selected="false"><span class="icon" data-icon="bank"></span>Bank &amp; KYC</button>
+    <button class="tab" data-tab="salary" role="tab" aria-selected="false"><span class="icon" data-icon="wallet"></span>Salary</button>
+    <button class="tab" data-tab="documents" role="tab" aria-selected="false"><span class="icon" data-icon="file"></span>Documents</button>
+    <button class="tab" data-tab="feedback" role="tab" aria-selected="false"><span class="icon" data-icon="message"></span>Feedback</button>
+  </nav>
+
+  <!-- ================= PERSONAL ================= -->
+  <section class="panel active" id="panel-personal" data-tab-panel="personal">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="user"></span></span>
+        <div>
+          <h2>Basic information</h2>
+          <p>Demographic fields, editable by the employee or a supervisor.</p>
+        </div>
+      </div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">Gender</span>
+          <select class="select">
+            <option selected>Female</option>
+            <option>Male</option>
+            <option>Other</option>
+            <option>Prefer not to say</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Marital status</span>
+          <select class="select">
+            <option selected>Single</option>
+            <option>Married</option>
+            <option>Divorced</option>
+            <option>Widowed</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Nationality</span>
+          <select class="select">
+            <option selected>Indian</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Blood group</span>
+          <select class="select">
+            <option>O−</option>
+            <option selected>O+</option>
+            <option>A−</option>
+            <option>A+</option>
+            <option>B−</option>
+            <option>B+</option>
+            <option>AB−</option>
+            <option>AB+</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="pin"></span></span>
+        <div>
+          <h2>Addresses</h2>
+          <p>Current, permanent and emergency addresses with standard dropdown fields.</p>
+        </div>
+      </div>
+
+      <div class="sub-head">Current address</div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Address line 1</span><input class="input" value="204, Crystal Heights, Baner Road" /></label>
+        <label class="field"><span class="field-label">Address line 2</span><input class="input" value="Near Balewadi Stadium" /></label>
+        <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" value="411045" maxlength="6" /></label>
+        <label class="field"><span class="field-label">City</span>
+          <select class="select"><option selected>Pune</option><option>Mumbai</option><option>Bengaluru</option></select>
+        </label>
+        <label class="field"><span class="field-label">State</span>
+          <select class="select"><option selected>Maharashtra</option><option>Karnataka</option></select>
+        </label>
+        <label class="field"><span class="field-label">Country</span>
+          <select class="select"><option selected>India</option></select>
+        </label>
+      </div>
+
+      <div class="sub-head">Permanent address</div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Address line 1</span><input class="input" value="House 12, Sector 14" /></label>
+        <label class="field"><span class="field-label">Address line 2</span><input class="input" value="Old Town" /></label>
+        <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" value="411014" maxlength="6" /></label>
+        <label class="field"><span class="field-label">City</span>
+          <select class="select"><option selected>Pune</option><option>Mumbai</option></select>
+        </label>
+        <label class="field"><span class="field-label">State</span>
+          <select class="select"><option selected>Maharashtra</option></select>
+        </label>
+        <label class="field"><span class="field-label">Country</span>
+          <select class="select"><option selected>India</option></select>
+        </label>
+      </div>
+
+      <div class="sub-head">Emergency address</div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Address line 1</span><input class="input" value="35, MG Road" /></label>
+        <label class="field"><span class="field-label">Address line 2</span><input class="input" value="Camp Area" /></label>
+        <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" value="411001" maxlength="6" /></label>
+        <label class="field"><span class="field-label">City</span>
+          <select class="select"><option selected>Pune</option></select>
+        </label>
+        <label class="field"><span class="field-label">State</span>
+          <select class="select"><option selected>Maharashtra</option></select>
+        </label>
+        <label class="field"><span class="field-label">Country</span>
+          <select class="select"><option selected>India</option></select>
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="phone"></span></span>
+        <div>
+          <h2>Emergency contact</h2>
+          <p>Primary contact for emergencies, with country code.</p>
+        </div>
+      </div>
+      <div class="form-grid cols-2">
+        <label class="field"><span class="field-label">Contact name</span><input class="input" value="Rohit Sharma" /></label>
+        <label class="field">
+          <span class="field-label">Mobile number</span>
+          <div class="field-wrap">
+            <span class="prefix">+91</span>
+            <input class="input" value="98220 12345" />
+          </div>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EMPLOYMENT ================= -->
+  <section class="panel" id="panel-employment" data-tab-panel="employment">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="briefcase"></span></span>
+        <div>
+          <h2>Employment record</h2>
+          <p>Maintained by the supervisor role; the employee can view only.</p>
+        </div>
+        <div class="spacer"></div>
+        <span class="badge b-gray only-supervisor">Supervisor maintain</span>
+        <span class="badge b-indigo only-employee">View only</span>
+      </div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">Joining date</span>
+          <input class="input" type="date" id="joiningDate" value="2021-03-12" />
+        </label>
+        <label class="field">
+          <span class="field-label">Probation period</span>
+          <select class="select" id="probation">
+            <option>1 month</option>
+            <option selected>3 months</option>
+            <option>6 months</option>
+            <option>9 months</option>
+            <option>12 months</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Confirmation date</span>
+          <input class="input" type="date" value="2021-06-12" />
+        </label>
+      </div>
+      <div class="callout callout-info" style="margin-top:16px">
+        <span class="icon" data-icon="clock"></span>
+        <span>Years of service is auto-computed as <strong>today − joining date</strong>. Currently <strong id="yosInline">5 years, 5 months</strong>.</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="layers"></span></span>
+        <div>
+          <h2>Experience</h2>
+          <p>Prior employment, with company, role, dates and description.</p>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-secondary btn-sm only-supervisor" id="addExperience"><span class="icon" data-icon="plus"></span>Add experience</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Company</th><th>Role</th><th>Start</th><th>End</th><th>Description</th><th></th></tr>
+          </thead>
+          <tbody id="expBody">
+            <tr>
+              <td><input class="input" value="CloudSprint Technologies" /></td>
+              <td><input class="input" value="HR Generalist" /></td>
+              <td><input class="input" type="month" value="2017-07" /></td>
+              <td><input class="input" type="month" value="2021-01" /></td>
+              <td><input class="input" value="Generalist covering payroll and recruitment" /></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><input class="input" value="Zenith Manufacturing" /></td>
+              <td><input class="input" value="Recruitment Coordinator" /></td>
+              <td><input class="input" type="month" value="2015-06" /></td>
+              <td><input class="input" type="month" value="2017-06" /></td>
+              <td><input class="input" value="Volume hiring for plant and field roles" /></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SKILLS & EDUCATION ================= -->
+  <section class="panel" id="panel-skills" data-tab-panel="skills">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="star"></span></span>
+        <div>
+          <h2>Skills</h2>
+          <p>Tag-style skills; add or remove freely.</p>
+        </div>
+      </div>
+      <div class="chips" id="skillChips">
+        <span class="chip">Talent management<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>
+        <span class="chip">Payroll<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>
+        <span class="chip">Recruitment<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>
+        <span class="chip">Employee relations<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>
+        <span class="chip">HRIS (SAP SuccessFactors)<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>
+        <span class="chip">Labour law compliance<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>
+      </div>
+      <div class="inline-add">
+        <input class="input" id="skillInput" placeholder="Add a skill…" onkeydown="if(event.key==='Enter'){addSkill();event.preventDefault();}" />
+        <button class="btn btn-secondary btn-sm" onclick="addSkill()"><span class="icon" data-icon="plus"></span>Add skill</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="graduation"></span></span>
+        <div>
+          <h2>Education</h2>
+          <p>Undergraduate / post graduate, university, degree and dates.</p>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-secondary btn-sm" id="addEducation"><span class="icon" data-icon="plus"></span>Add education</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Level</th><th>University</th><th>Degree</th><th>Start</th><th>End</th><th></th></tr>
+          </thead>
+          <tbody id="eduBody">
+            <tr>
+              <td><select class="select"><option>Undergraduate</option><option selected>Post Graduate</option></select></td>
+              <td><input class="input" value="Symbiosis Centre for Distance Learning" /></td>
+              <td><input class="input" value="MBA in Human Resources" /></td>
+              <td><input class="input" type="month" value="2018-07" /></td>
+              <td><input class="input" type="month" value="2021-06" /></td>
+              <td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><select class="select"><option selected>Undergraduate</option><option>Post Graduate</option></select></td>
+              <td><input class="input" value="Savitribai Phule Pune University" /></td>
+              <td><input class="input" value="B.Com (Hons)" /></td>
+              <td><input class="input" type="month" value="2014-07" /></td>
+              <td><input class="input" type="month" value="2017-06" /></td>
+              <td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="award"></span></span>
+        <div>
+          <h2>Certificates</h2>
+          <p>Certificate name and obtained date.</p>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-secondary btn-sm" id="addCertificate"><span class="icon" data-icon="plus"></span>Add certificate</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Certificate name</th><th>Obtained date</th><th></th></tr>
+          </thead>
+          <tbody id="certBody">
+            <tr>
+              <td><input class="input" value="HR Analytics Certification, LinkedIn Learning" /></td>
+              <td><input class="input" type="date" value="2023-05-12" /></td>
+              <td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><input class="input" value="POSH Training, SHRM India" /></td>
+              <td><input class="input" type="date" value="2024-11-28" /></td>
+              <td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ASSETS ================= -->
+  <section class="panel" id="panel-assets" data-tab-panel="assets">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="monitor"></span></span>
+        <div>
+          <h2>Company assets</h2>
+          <p>Assigned hardware and furniture. Maintained by the supervisor; view-only for the employee.</p>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-secondary btn-sm only-supervisor" id="addAsset"><span class="icon" data-icon="plus"></span>Assign asset</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Asset</th><th>Assigned date</th><th>End date</th><th>Manufacturer</th><th>Model</th><th>Make year</th><th class="num">Market value</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody id="assetBody">
+            <tr>
+              <td><select class="select"><option>Laptop</option><option>Mobile</option><option>Internet</option><option>UPS</option><option>Car</option><option>Bike</option><option>Office Table</option><option>Office Chair</option><option selected>Ergonomic Chair</option></select></td>
+              <td><input class="input" type="date" value="2023-01-10" /></td>
+              <td><input class="input" type="date" value="2028-01-09" /></td>
+              <td><input class="input" value="Herman Miller" /></td>
+              <td><input class="input" value="Aeron" /></td>
+              <td><input class="input" value="2021" /></td>
+              <td><input class="input num" value="135000" /></td>
+              <td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><select class="select"><option>Laptop</option><option selected>Mobile</option><option>Internet</option><option>UPS</option><option>Car</option><option>Bike</option><option>Office Table</option><option>Office Chair</option><option>Ergonomic Chair</option></select></td>
+              <td><input class="input" type="date" value="2024-04-18" /></td>
+              <td><input class="input" type="date" value="2026-04-17" /></td>
+              <td><input class="input" value="Apple" /></td>
+              <td><input class="input" value="iPhone 15" /></td>
+              <td><input class="input" value="2023" /></td>
+              <td><input class="input num" value="79900" /></td>
+              <td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><select class="select"><option selected>Laptop</option><option>Mobile</option><option>Internet</option><option>UPS</option><option>Car</option><option>Bike</option><option>Office Table</option><option>Office Chair</option><option>Ergonomic Chair</option></select></td>
+              <td><input class="input" type="date" value="2024-06-02" /></td>
+              <td><input class="input" type="date" value="2027-06-01" /></td>
+              <td><input class="input" value="Dell" /></td>
+              <td><input class="input" value="XPS 15 9530" /></td>
+              <td><input class="input" value="2023" /></td>
+              <td><input class="input num" value="210000" /></td>
+              <td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><select class="select"><option>Laptop</option><option>Mobile</option><option selected>Internet</option><option>UPS</option><option>Car</option><option>Bike</option><option>Office Table</option><option>Office Chair</option><option>Ergonomic Chair</option></select></td>
+              <td><input class="input" type="date" value="2024-08-15" /></td>
+              <td><input class="input" type="date" value="2026-08-14" /></td>
+              <td><input class="input" value="Reliance Jio" /></td>
+              <td><input class="input" value="JioFiber 300 Mbps" /></td>
+              <td><input class="input" value="2024" /></td>
+              <td><input class="input num" value="12000" /></td>
+              <td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><select class="select"><option>Laptop</option><option>Mobile</option><option>Internet</option><option selected>UPS</option><option>Car</option><option>Bike</option><option>Office Table</option><option>Office Chair</option><option>Ergonomic Chair</option></select></td>
+              <td><input class="input" type="date" value="2023-01-12" /></td>
+              <td><input class="input" type="date" value="2026-01-11" /></td>
+              <td><input class="input" value="APC" /></td>
+              <td><input class="input" value="Back-UPS BE700Y" /></td>
+              <td><input class="input" value="2022" /></td>
+              <td><input class="input num" value="8500" /></td>
+              <td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+            <tr>
+              <td><select class="select"><option>Laptop</option><option>Mobile</option><option>Internet</option><option>UPS</option><option>Car</option><option>Bike</option><option selected>Office Table</option><option>Office Chair</option><option>Ergonomic Chair</option></select></td>
+              <td><input class="input" type="date" value="2023-02-05" /></td>
+              <td><input class="input" type="date" value="2028-02-04" /></td>
+              <td><input class="input" value="IKEA" /></td>
+              <td><input class="input" value="Bekant" /></td>
+              <td><input class="input" value="2020" /></td>
+              <td><input class="input num" value="28000" /></td>
+              <td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>
+              <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BANK & KYC ================= -->
+  <section class="panel" id="panel-kyc" data-tab-panel="kyc">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="shield"></span></span>
+        <div>
+          <h2>Identity &amp; statutory</h2>
+          <p>PAN, Aadhaar and UAN as per the Income Tax Act 1961 and the Aadhaar Act 2016.</p>
+        </div>
+      </div>
+      <div class="kyc-grid">
+        <div class="kyc-panel">
+          <span class="lock" title="Encrypted"><span class="icon" data-icon="lock"></span></span>
+          <div class="k">PAN number</div>
+          <div class="v">AQPPS1234K</div>
+        </div>
+        <div class="kyc-panel">
+          <span class="lock" title="Encrypted"><span class="icon" data-icon="lock"></span></span>
+          <div class="k">Aadhaar number</div>
+          <div class="v">•••• •••• 4821</div>
+        </div>
+        <div class="kyc-panel">
+          <span class="lock" title="Encrypted"><span class="icon" data-icon="lock"></span></span>
+          <div class="k">Universal account number</div>
+          <div class="v">UAN-102345678901</div>
+        </div>
+      </div>
+      <div class="callout callout-sec" style="margin-top:16px">
+        <span class="icon" data-icon="lock"></span>
+        <span>Your PAN and Aadhaar are <strong>encrypted and stored securely</strong> per the <strong>DPDP Act 2023</strong>. Only you and authorised payroll officers can access them.</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="bank"></span></span>
+        <div>
+          <h2>Bank details</h2>
+          <p>Salary bank account used for payroll disbursement.</p>
+        </div>
+        <div class="spacer"></div>
+        <span class="badge b-gray only-supervisor">Supervisor maintain</span>
+      </div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Bank name</span><input class="input" value="HDFC Bank" /></label>
+        <label class="field"><span class="field-label">Account holder name</span><input class="input" value="Ananya Sharma" /></label>
+        <label class="field"><span class="field-label">Account number</span><input class="input is-mono" value="5020 0012 3456 7890" /></label>
+        <label class="field"><span class="field-label">IFSC code</span><input class="input is-mono" value="HDFC0001234" /></label>
+        <label class="field">
+          <span class="field-label">Account type</span>
+          <select class="select"><option>Savings</option><option>Current</option><option selected>Salary</option></select>
+        </label>
+      </div>
+      <div class="callout callout-info" style="margin-top:16px">
+        <span class="icon" data-icon="info"></span>
+        <span>Bank details are shared with payroll only for disbursement; access is logged.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SALARY ================= -->
+  <section class="panel" id="panel-salary" data-tab-panel="salary">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="wallet"></span></span>
+        <div>
+          <h2>Monthly pay computation</h2>
+          <p>Supervisor role can maintain this tab; employee can view only.</p>
+        </div>
+        <div class="spacer"></div>
+        <span class="badge b-gray only-supervisor">Supervisor maintain</span>
+        <span class="badge b-indigo only-employee">View only</span>
+      </div>
+
+      <div class="form-grid" style="margin-bottom:20px">
+        <label class="field"><span class="field-label">Month</span>
+          <select class="select" id="salMonth">
+            <option>January</option><option>February</option><option>March</option>
+            <option selected>July</option><option>August</option><option>September</option>
+            <option>October</option><option>November</option><option>December</option>
+          </select>
+        </label>
+        <label class="field"><span class="field-label">Year</span>
+          <select class="select" id="salYear"><option selected>2026</option><option>2025</option><option>2024</option></select>
+        </label>
+        <label class="field" id="ewaiField">
+          <span class="field-label">EWAI employee</span>
+          <div class="flag-group" style="height:36px">
+            <label class="switch" title="Salary tab is active only if this field is active">
+              <input type="checkbox" id="ewaiToggle" checked />
+              <span class="track"></span>
+            </label>
+            <span id="ewaiVal" style="font-weight:600;color:var(--success)">Active</span>
+          </div>
+        </label>
+      </div>
+
+      <div id="salaryLocked" class="callout callout-warn" style="display:none;margin-bottom:16px">
+        <span class="icon" data-icon="lock"></span>
+        <span>Salary tab is inactive because the <strong>EWAI employee</strong> field is off. Turn it on to compute pay.</span>
+      </div>
+
+      <div id="salaryArea">
+        <div class="sal-lines">
+          <div class="sal-item">
+            <div class="row"><span class="lbl">Base salary</span><span class="sign plus">+</span></div>
+            <div class="field-wrap"><span class="prefix">₹</span><input class="input" id="salBase" type="number" value="85000" min="0" oninput="calcSalary()" /></div>
+          </div>
+          <div class="sal-item">
+            <div class="row"><span class="lbl">HRA</span><span class="sign plus">+</span></div>
+            <div class="field-wrap"><span class="prefix">₹</span><input class="input" id="salHra" type="number" value="34000" min="0" oninput="calcSalary()" /></div>
+          </div>
+          <div class="sal-item">
+            <div class="row"><span class="lbl">Allowances</span><span class="sign plus">+</span></div>
+            <div class="field-wrap"><span class="prefix">₹</span><input class="input" id="salAllw" type="number" value="8000" min="0" oninput="calcSalary()" /></div>
+          </div>
+          <div class="sal-item">
+            <div class="row"><span class="lbl">Professional tax</span><span class="sign minus">−</span></div>
+            <div class="field-wrap"><span class="prefix">₹</span><input class="input" id="salProfTax" type="number" value="200" min="0" oninput="calcSalary()" /></div>
+          </div>
+          <div class="sal-item">
+            <div class="row"><span class="lbl">TDS</span><span class="sign minus">−</span></div>
+            <div class="field-wrap"><span class="prefix">%</span><input class="input" id="salTds" type="number" value="10" min="0" max="50" step="0.5" oninput="calcSalary()" /></div>
+          </div>
+          <div class="sal-item" style="align-items:center;justify-content:center;background:var(--surface-2)">
+            <span style="font-size:12.5px;color:var(--text-3);text-align:center">Total payable =<br/>Base + HRA + Allowances − Prof. tax − TDS</span>
+          </div>
+        </div>
+
+        <div class="sal-total">
+          <div>
+            <div class="lbl"><span class="icon" data-icon="check"></span>Total payable for <span id="salPeriodLabel">July 2026</span></div>
+            <div class="formula">Gross ₹1,27,000 − professional tax ₹200 − TDS 10% ₹12,700</div>
+          </div>
+          <div class="amount" id="salTotal">₹1,14,100</div>
+        </div>
+
+        <div class="callout callout-info" style="margin-top:16px">
+          <span class="icon" data-icon="info"></span>
+          <span>This tab is <strong>active only if the EWAI employee field is active</strong>.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DOCUMENTS ================= -->
+  <section class="panel" id="panel-documents" data-tab-panel="documents">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="file"></span></span>
+        <div>
+          <h2>Documents</h2>
+          <p>Every document kind in one tab. Employees view, edit or download their own; supervisors can view, edit or download any employee's.</p>
+        </div>
+      </div>
+      <div class="callout callout-info" style="margin-bottom:16px">
+        <span class="icon" data-icon="eye"></span>
+        <span>All previous versions are preserved. Uploading a new file never overwrites history.</span>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Document</th><th>Type / Year</th><th>Latest version</th><th>Uploaded by</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="docBody">
+            <tr data-doc="identity">
+              <td class="cell-strong">Identity</td>
+              <td>
+                <select class="select" style="min-width:130px">
+                  <option selected>Aadhaar</option><option>PAN</option><option>Passport</option>
+                </select>
+              </td>
+              <td id="latest-identity"><span class="cell-strong">aadhaar_v3.pdf</span> <span class="doc-empty" style="font-size:12px">· 14 Jan 2026</span></td>
+              <td>Ananya Sharma</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('identity')"><span class="icon" data-icon="upload"></span>Upload</button>
+                <details class="versions" style="display:inline-block">
+                  <summary><span class="icon" data-icon="history"></span>Versions</summary>
+                  <div class="v-pop" id="versions-identity">
+                    <div class="doc-version-row"><span class="fname">aadhaar_v1.pdf</span><span class="meta">11 Jan 2021</span></div>
+                    <div class="doc-version-row"><span class="fname">aadhaar_v2.pdf</span><span class="meta">02 May 2023</span></div>
+                    <div class="doc-version-row"><span class="fname">aadhaar_v3.pdf</span><span class="meta">14 Jan 2026</span></div>
+                  </div>
+                </details>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Downloading aadhaar_v3.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
+              </td>
+            </tr>
+            <tr data-doc="education">
+              <td class="cell-strong">Education certificates</td>
+              <td>
+                <select class="select" style="min-width:130px">
+                  <option>Undergraduate</option><option selected>Post Graduate</option>
+                </select>
+              </td>
+              <td id="latest-education"><span class="cell-strong">mba_degree.pdf</span> <span class="doc-empty" style="font-size:12px">· 02 Jul 2024</span></td>
+              <td>Ananya Sharma</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('education')"><span class="icon" data-icon="upload"></span>Upload</button>
+                <details class="versions" style="display:inline-block">
+                  <summary><span class="icon" data-icon="history"></span>Versions</summary>
+                  <div class="v-pop" id="versions-education">
+                    <div class="doc-version-row"><span class="fname">bcom_degree.pdf</span><span class="meta">03 Jul 2017</span></div>
+                    <div class="doc-version-row"><span class="fname">mba_degree.pdf</span><span class="meta">02 Jul 2024</span></div>
+                  </div>
+                </details>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Downloading mba_degree.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
+              </td>
+            </tr>
+            <tr data-doc="offer">
+              <td class="cell-strong">Offer / increment letter</td>
+              <td><span class="doc-empty">–</span></td>
+              <td id="latest-offer"><span class="cell-strong">increment_2026.pdf</span> <span class="doc-empty" style="font-size:12px">· 01 Apr 2026</span></td>
+              <td>HR · Mayank K.</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('offer')"><span class="icon" data-icon="upload"></span>Upload</button>
+                <details class="versions" style="display:inline-block">
+                  <summary><span class="icon" data-icon="history"></span>Versions</summary>
+                  <div class="v-pop" id="versions-offer">
+                    <div class="doc-version-row"><span class="fname">offer_letter_2021.pdf</span><span class="meta">20 Feb 2021</span></div>
+                    <div class="doc-version-row"><span class="fname">increment_2024.pdf</span><span class="meta">01 Apr 2024</span></div>
+                    <div class="doc-version-row"><span class="fname">increment_2026.pdf</span><span class="meta">01 Apr 2026</span></div>
+                  </div>
+                </details>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Downloading increment_2026.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
+              </td>
+            </tr>
+            <tr data-doc="form16">
+              <td class="cell-strong">Form 16</td>
+              <td>
+                <select class="select" style="min-width:130px">
+                  <option>FY 2023-24</option><option>FY 2024-25</option><option selected>FY 2025-26</option>
+                </select>
+              </td>
+              <td id="latest-form16"><span class="cell-strong">form16_fy2526.pdf</span> <span class="doc-empty" style="font-size:12px">· 20 May 2026</span></td>
+              <td>Ananya Sharma</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('form16')"><span class="icon" data-icon="upload"></span>Upload</button>
+                <details class="versions" style="display:inline-block">
+                  <summary><span class="icon" data-icon="history"></span>Versions</summary>
+                  <div class="v-pop" id="versions-form16">
+                    <div class="doc-version-row"><span class="fname">form16_fy2324.pdf</span><span class="meta">12 Jun 2024</span></div>
+                    <div class="doc-version-row"><span class="fname">form16_fy2425.pdf</span><span class="meta">25 Jun 2025</span></div>
+                    <div class="doc-version-row"><span class="fname">form16_fy2526.pdf</span><span class="meta">20 May 2026</span></div>
+                  </div>
+                </details>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Downloading form16_fy2526.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
+              </td>
+            </tr>
+            <tr data-doc="shares">
+              <td class="cell-strong">Employee shares</td>
+              <td><span class="doc-empty">–</span></td>
+              <td id="latest-shares"><span class="cell-strong">esop_grant_2024.pdf</span> <span class="doc-empty" style="font-size:12px">· 12 Aug 2024</span></td>
+              <td>Ananya Sharma</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('shares')"><span class="icon" data-icon="upload"></span>Upload</button>
+                <details class="versions" style="display:inline-block">
+                  <summary><span class="icon" data-icon="history"></span>Versions</summary>
+                  <div class="v-pop" id="versions-shares">
+                    <div class="doc-version-row"><span class="fname">esop_grant_2024.pdf</span><span class="meta">12 Aug 2024</span></div>
+                  </div>
+                </details>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Downloading esop_grant_2024.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
+              </td>
+            </tr>
+            <tr data-doc="resignation">
+              <td class="cell-strong">Resignation letter</td>
+              <td><span class="doc-empty">–</span></td>
+              <td id="latest-resignation"><span class="doc-empty">Not uploaded</span></td>
+              <td>–</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('resignation')"><span class="icon" data-icon="upload"></span>Upload</button>
+              </td>
+            </tr>
+            <tr data-doc="acceptance">
+              <td class="cell-strong">Resignation acceptance letter</td>
+              <td><span class="doc-empty">–</span></td>
+              <td id="latest-acceptance"><span class="doc-empty">Not uploaded</span></td>
+              <td>–</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="uploadDoc('acceptance')"><span class="icon" data-icon="upload"></span>Upload</button>
+              </td>
+            </tr>
+            <tr data-doc="relieving">
+              <td class="cell-strong">Relieving letter</td>
+              <td>
+                <span class="field-wrap only-supervisor" style="display:inline-block;vertical-align:middle">
+                  <input class="input" style="width:190px;font-size:12.5px" type="email" placeholder="person email…" value="ananya.sharma@peopledesk.in" />
+                </span>
+                <span class="badge b-amber" style="margin-left:6px">Supervisor only</span>
+              </td>
+              <td id="latest-relieving"><span class="doc-empty">Not uploaded</span></td>
+              <td>–</td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm only-supervisor" onclick="uploadDoc('relieving')"><span class="icon" data-icon="upload"></span>Upload</button>
+                <button class="btn btn-ghost btn-sm only-employee" onclick="toast('Relieving letter upload is available to the supervisor role only')"><span class="icon" data-icon="lock"></span></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEEDBACK ================= -->
+  <section class="panel" id="panel-feedback" data-tab-panel="feedback">
+    <div class="section">
+      <div class="section-head">
+        <span class="head-icon"><span class="icon" data-icon="message"></span></span>
+        <div>
+          <h2>Feedback &amp; supervision</h2>
+          <p>Message boxes raised by the employee, with supervisor feedback, supervisor rating and employee acceptance.</p>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-secondary btn-sm" id="addFeedback"><span class="icon" data-icon="plus"></span>Raise message</button>
+      </div>
+
+      <div class="callout callout-info" style="margin-bottom:16px">
+        <span class="icon" data-icon="info"></span>
+        <span>Flow: <strong>Employee</strong> raises a topic → <strong>Supervisor</strong> gives feedback and a rating → <strong>Employee</strong> accepts or declines.</span>
+      </div>
+
+      <div id="fbList">
+
+        <article class="fb-card">
+          <div class="fb-head">
+            <span class="badge b-indigo">Suggestion</span>
+            <span class="fb-date">11 Aug 2026 · 11:27 PM</span>
+            <span class="fb-topic">Remote work policy (two days a week)</span>
+            <div class="spacer"></div>
+            <span class="fb-status" style="color:var(--success)">Accepted</span>
+          </div>
+          <div class="fb-block">
+            <div class="fb-role"><span class="icon" data-icon="user"></span>Message by employee</div>
+            <p class="fb-msg">Could we pilot a hybrid schedule with two remote days per week for the analytics team? It would help with focused deep-work blocks.</p>
+          </div>
+          <div class="fb-block">
+            <div class="fb-role"><span class="icon" data-icon="shield"></span>Supervisor feedback</div>
+            <p class="fb-msg">Supportive. We will pilot this for one quarter starting September and measure output before deciding on a permanent policy.</p>
+          </div>
+          <div class="fb-foot">
+            <div class="stars" data-readonly data-score="4">
+              <button class="star on" data-v="1"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="2"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="3"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="4"><span class="icon" data-icon="star"></span></button>
+              <button class="star" data-v="5"><span class="icon" data-icon="star"></span></button>
+            </div>
+            <span style="font-size:12.5px;color:var(--text-3)">Supervisor rating</span>
+          </div>
+        </article>
+
+        <article class="fb-card">
+          <div class="fb-head">
+            <span class="badge b-amber">Concern</span>
+            <span class="fb-date">06 Aug 2026 · 04:12 PM</span>
+            <span class="fb-topic">Team workload during Q3 close</span>
+            <div class="spacer"></div>
+            <span class="fb-status" style="color:var(--warning)">Pending acceptance</span>
+          </div>
+          <div class="fb-block">
+            <div class="fb-role"><span class="icon" data-icon="user"></span>Message by employee</div>
+            <p class="fb-msg">With the quarterly close and the attrition review running together, the team is clocking 10+ hour days. Flagging it so we can prioritise before burn-out sets in.</p>
+          </div>
+          <div class="fb-block only-supervisor">
+            <div class="fb-role"><span class="icon" data-icon="shield"></span>Supervisor feedback</div>
+            <textarea class="textarea">Acknowledged. I am re-scoping the attrition review to run the following week and pulling in one temp resource for close-week data pulls. Please confirm if this resolves the immediate pressure.</textarea>
+          </div>
+          <div class="fb-foot">
+            <div class="stars" data-score="0">
+              <button class="star" data-v="1"><span class="icon" data-icon="star"></span></button>
+              <button class="star" data-v="2"><span class="icon" data-icon="star"></span></button>
+              <button class="star" data-v="3"><span class="icon" data-icon="star"></span></button>
+              <button class="star" data-v="4"><span class="icon" data-icon="star"></span></button>
+              <button class="star" data-v="5"><span class="icon" data-icon="star"></span></button>
+            </div>
+            <span style="font-size:12.5px;color:var(--text-3)">Supervisor rating</span>
+            <div class="fb-accept only-employee">
+              <button class="btn btn-secondary btn-sm" onclick="acceptFeedback(this, false)">Decline</button>
+              <button class="btn btn-primary btn-sm" onclick="acceptFeedback(this, true)"><span class="icon" data-icon="check"></span>Accept</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fb-card">
+          <div class="fb-head">
+            <span class="badge b-green">Appreciation</span>
+            <span class="fb-date">28 Jul 2026 · 10:05 AM</span>
+            <span class="fb-topic">Kudos for onboarding revamp</span>
+            <div class="spacer"></div>
+            <span class="fb-status" style="color:var(--success)">Accepted</span>
+          </div>
+          <div class="fb-block">
+            <div class="fb-role"><span class="icon" data-icon="user"></span>Message by employee</div>
+            <p class="fb-msg">Thank you for funding the new 30-day onboarding checklist. The latest cohort hit a 4.8/5 feedback score.</p>
+          </div>
+          <div class="fb-block">
+            <div class="fb-role"><span class="icon" data-icon="shield"></span>Supervisor feedback</div>
+            <p class="fb-msg">Well executed, and the score shows the approach works. Let us formalise it as the standard for all departments.</p>
+          </div>
+          <div class="fb-foot">
+            <div class="stars" data-readonly data-score="5">
+              <button class="star on" data-v="1"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="2"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="3"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="4"><span class="icon" data-icon="star"></span></button>
+              <button class="star on" data-v="5"><span class="icon" data-icon="star"></span></button>
+            </div>
+            <span style="font-size:12.5px;color:var(--text-3)">Supervisor rating</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <p class="footer-note">PeopleDesk · Employee Management System prototype · All people and figures are illustrative demo data.</p>
+</main>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<script>
+/* ---------------- icons ---------------- */
+var ICONS = {
+  users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+  settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  briefcase: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  graduation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><path d="M22 10v6"/></svg>',
+  monitor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
+  bank: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7"/><path d="M19 21V7"/><path d="M3 7 12 2l9 5"/><path d="M8 7v3"/><path d="M12 7v3"/><path d="M16 7v3"/><path d="M2 21h20"/></svg>',
+  wallet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>',
+  file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+  message: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+  upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
+  history: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>',
+  award: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
+  layers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 6-10 6L2 8z"/><path d="m2 14 10 6 10-6"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>'
+};
+
+document.querySelectorAll('[data-icon]').forEach(function (el) {
+  var name = el.getAttribute('data-icon');
+  if (ICONS[name]) el.innerHTML = ICONS[name];
+});
+
+/* ---------------- toast ---------------- */
+function toast(msg) {
+  var wrap = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<span class="icon">' + ICONS.check + '</span><span>' + msg + '</span>';
+  wrap.appendChild(t);
+  setTimeout(function () { t.classList.add('out'); }, 2600);
+  setTimeout(function () { t.remove(); }, 2950);
+}
+
+/* ---------------- tabs ---------------- */
+document.querySelectorAll('.tab').forEach(function (tab) {
+  tab.addEventListener('click', function () {
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t === tab);
+      t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-tab-panel]').forEach(function (p) {
+      p.classList.toggle('active', p.getAttribute('data-tab-panel') === tab.getAttribute('data-tab'));
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+/* ---------------- role toggle ---------------- */
+function setRole(role) {
+  document.body.setAttribute('data-role', role);
+  document.getElementById('roleEmployee').setAttribute('aria-pressed', role === 'employee');
+  document.getElementById('roleSupervisor').setAttribute('aria-pressed', role === 'supervisor');
+  var pill = document.getElementById('rolePill');
+  var text = document.getElementById('roleText');
+  if (role === 'employee') {
+    pill.className = 'pill pill-emp';
+    pill.textContent = 'Employee view';
+    text.textContent = 'Viewing as Ananya Sharma (employee). Salary and assets are read-only; raise feedback or accept supervisor responses.';
+  } else {
+    pill.className = 'pill pill-sup';
+    pill.textContent = 'Supervisor view';
+    text.textContent = 'All tabs editable. You can maintain salary, assign assets, and manage any employee document.';
+  }
+  permFlag.disabled = role !== 'supervisor';
+  ewaiToggle.disabled = role !== 'supervisor';
+  ['#panel-employment', '#panel-kyc', '#panel-assets'].forEach(function (sel) {
+    document.querySelectorAll(sel + ' input, ' + sel + ' select').forEach(function (el) {
+      el.disabled = role === 'employee';
+    });
+  });
+  toggleSalaryLock();
+}
+document.getElementById('roleEmployee').addEventListener('click', function () { setRole('employee'); toast('Switched to Employee view'); });
+document.getElementById('roleSupervisor').addEventListener('click', function () { setRole('supervisor'); toast('Switched to Supervisor view'); });
+
+/* ---------------- permanent / part-time flag ---------------- */
+var permFlag = document.getElementById('permFlag');
+var flagVal = document.getElementById('flagVal');
+permFlag.addEventListener('change', function () {
+  var permanent = permFlag.checked;
+  flagVal.textContent = permanent ? 'Permanent' : 'Part-time';
+  flagVal.classList.toggle('part', !permanent);
+  toast(permanent ? 'Flag set: Permanent' : 'Flag set: Part-time');
+});
+
+/* ---------------- years of service ---------------- */
+function yosFrom(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d)) return null;
+  var now = new Date();
+  var years = now.getFullYear() - d.getFullYear();
+  var months = now.getMonth() - d.getMonth();
+  if (months < 0) { years--; months += 12; }
+  return { years: years, months: months };
+}
+function renderYos() {
+  var r = yosFrom(document.getElementById('joiningDate').value);
+  if (!r) return;
+  var label = r.years + 'y ' + r.months + 'm';
+  var pretty = r.years + ' year' + (r.years === 1 ? '' : 's') + ', ' + r.months + ' month' + (r.months === 1 ? '' : 's');
+  document.getElementById('yosValue').textContent = label;
+  document.getElementById('yosInline').textContent = pretty;
+}
+document.getElementById('joiningDate').addEventListener('change', renderYos);
+
+/* ---------------- salary ---------------- */
+function inr(n) {
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+function calcSalary() {
+  var base = +document.getElementById('salBase').value || 0;
+  var hra = +document.getElementById('salHra').value || 0;
+  var allw = +document.getElementById('salAllw').value || 0;
+  var prof = +document.getElementById('salProfTax').value || 0;
+  var tdsPct = +document.getElementById('salTds').value || 0;
+  var gross = base + hra + allw;
+  var tds = gross * tdsPct / 100;
+  var total = gross - prof - tds;
+  var m = document.getElementById('salMonth').value;
+  var y = document.getElementById('salYear').value;
+  document.getElementById('salTotal').textContent = inr(total);
+  document.querySelector('.sal-total .formula').textContent = 'Gross ' + inr(gross) + ' − professional tax ' + inr(prof) + ' − TDS ' + tdsPct + '% ' + inr(tds);
+  document.getElementById('salPeriodLabel').textContent = m + ' ' + y;
+}
+document.getElementById('salMonth').addEventListener('change', calcSalary);
+document.getElementById('salYear').addEventListener('change', calcSalary);
+
+var ewaiToggle = document.getElementById('ewaiToggle');
+var ewaiVal = document.getElementById('ewaiVal');
+function toggleSalaryLock() {
+  var active = ewaiToggle.checked && document.body.getAttribute('data-role') === 'supervisor';
+  var lockedArea = document.getElementById('salaryLocked');
+  var area = document.getElementById('salaryArea');
+  lockedArea.style.display = active ? 'none' : 'block';
+  area.style.opacity = active ? '1' : '.45';
+  area.querySelectorAll('input, select').forEach(function (el) {
+    el.disabled = !active;
+  });
+}
+ewaiToggle.addEventListener('change', function () {
+  ewaiVal.textContent = ewaiToggle.checked ? 'Active' : 'Inactive';
+  ewaiVal.style.color = ewaiToggle.checked ? 'var(--success)' : 'var(--warning)';
+  toggleSalaryLock();
+  toast(ewaiToggle.checked ? 'EWAI flag enabled. Salary tab active' : 'EWAI flag disabled. Salary tab inactive');
+});
+
+/* ---------------- add rows ---------------- */
+function addRow(tbodyId, cells) {
+  var tr = document.createElement('tr');
+  tr.innerHTML = cells;
+  document.getElementById(tbodyId).appendChild(tr);
+}
+function removeRow(btn) {
+  btn.closest('tr').remove();
+  toast('Row removed');
+}
+function removeCard(btn) {
+  btn.closest('.fb-card').remove();
+  toast('Draft deleted');
+}
+document.getElementById('addExperience').addEventListener('click', function () {
+  addRow('expBody', [
+    '<td><input class="input" placeholder="Company name"/></td>',
+    '<td><input class="input" placeholder="Role"/></td>',
+    '<td><input class="input" type="month"/></td>',
+    '<td><input class="input" type="month"/></td>',
+    '<td><input class="input" placeholder="Job description"/></td>',
+    '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
+  ].join(''));
+  refreshIcons();
+  toast('Experience row added (demo)');
+});
+document.getElementById('addEducation').addEventListener('click', function () {
+  addRow('eduBody', [
+    '<td><select class="select"><option>Undergraduate</option><option>Post Graduate</option></select></td>',
+    '<td><input class="input" placeholder="University"/></td>',
+    '<td><input class="input" placeholder="Degree name"/></td>',
+    '<td><input class="input" type="month"/></td>',
+    '<td><input class="input" type="month"/></td>',
+    '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
+  ].join(''));
+  refreshIcons();
+  toast('Education row added (demo)');
+});
+document.getElementById('addCertificate').addEventListener('click', function () {
+  addRow('certBody', [
+    '<td><input class="input" placeholder="Certificate name"/></td>',
+    '<td><input class="input" type="date"/></td>',
+    '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
+  ].join(''));
+  refreshIcons();
+  toast('Certificate row added (demo)');
+});
+document.getElementById('addAsset').addEventListener('click', function () {
+  var options = ['Laptop','Mobile','Internet','UPS','Car','Bike','Office Table','Office Chair','Ergonomic Chair'];
+  var sel = options.map(function (o) { return '<option>' + o + '</option>'; }).join('');
+  addRow('assetBody', [
+    '<td><select class="select">' + sel + '</select></td>',
+    '<td><input class="input" type="date"/></td>',
+    '<td><input class="input" type="date"/></td>',
+    '<td><input class="input" placeholder="Manufacturer"/></td>',
+    '<td><input class="input" placeholder="Model"/></td>',
+    '<td><input class="input" placeholder="2025"/></td>',
+    '<td><input class="input num" placeholder="0"/></td>',
+    '<td><span class="badge b-green"><span class="icon" data-icon="check"></span>Allocated</span></td>',
+    '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
+  ].join(''));
+  refreshIcons();
+  toast('New asset row added. Fill in the details (demo)');
+});
+
+/* ---------------- skills ---------------- */
+function addSkill() {
+  var input = document.getElementById('skillInput');
+  var val = input.value.trim();
+  if (!val) { toast('Type a skill name first'); return; }
+  var chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.innerHTML = escapeHtml(val) + '<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button>';
+  document.getElementById('skillChips').appendChild(chip);
+  input.value = '';
+  refreshIcons();
+  toast('Skill added (demo)');
+}
+function removeChip(btn) {
+  btn.closest('.chip').remove();
+  toast('Skill removed');
+}
+
+/* ---------------- documents ---------------- */
+var docVersions = {
+  identity: ['aadhaar_v1.pdf · 11 Jan 2021', 'aadhaar_v2.pdf · 02 May 2023', 'aadhaar_v3.pdf · 14 Jan 2026'],
+  education: ['bcom_degree.pdf · 03 Jul 2017', 'mba_degree.pdf · 02 Jul 2024'],
+  offer: ['offer_letter_2021.pdf · 20 Feb 2021', 'increment_2024.pdf · 01 Apr 2024', 'increment_2026.pdf · 01 Apr 2026'],
+  form16: ['form16_fy2324.pdf · 12 Jun 2024', 'form16_fy2425.pdf · 25 Jun 2025', 'form16_fy2526.pdf · 20 May 2026'],
+  shares: ['esop_grant_2024.pdf · 12 Aug 2024'],
+  resignation: [],
+  acceptance: [],
+  relieving: []
+};
+function uploadDoc(key) {
+  var names = { identity: 'aadhaar', education: 'degree', offer: 'letter', form16: 'form16', shares: 'esop', resignation: 'resignation', acceptance: 'acceptance', relieving: 'relieving' };
+  var stamp = new Date().toISOString().slice(0, 10);
+  var file = names[key] + '_' + stamp + '.pdf';
+  var today = new Date();
+  var pretty = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  docVersions[key].push(file + ' · ' + pretty);
+  var pop = document.getElementById('versions-' + key);
+  if (pop) {
+    var row = document.createElement('div');
+    row.className = 'doc-version-row';
+    row.innerHTML = '<span class="fname">' + file + '</span><span class="meta">' + pretty + '</span>';
+    pop.appendChild(row);
+  }
+  var latest = document.getElementById('latest-' + key);
+  if (latest) {
+    latest.innerHTML = '<span class="cell-strong">' + file + '</span> <span class="doc-empty" style="font-size:12px">· ' + pretty + '</span>';
+  }
+  toast('Uploaded ' + file + ' (demo)');
+}
+
+/* ---------------- feedback ---------------- */
+function addFeedbackCard() {
+  var card = document.createElement('article');
+  card.className = 'fb-card';
+  var now = new Date();
+  var date = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  card.innerHTML = [
+    '<div class="fb-head">',
+    '  <select class="select" style="width:150px"><option>Suggestion</option><option>Concern</option><option>Appreciation</option><option>Request</option><option>Grievance</option></select>',
+    '  <span class="fb-date">' + date + '</span>',
+    '  <input class="input" style="flex:1;min-width:160px" placeholder="Topic…"/>',
+    '  <div class="spacer"></div>',
+    '  <span class="fb-status" style="color:var(--text-3)">Draft</span>',
+    '</div>',
+    '<div class="fb-block">',
+    '  <div class="fb-role"><span class="icon" data-icon="user"></span>Message by employee</div>',
+    '  <textarea class="textarea" placeholder="Describe your message…"></textarea>',
+    '</div>',
+    '<div class="fb-block only-supervisor">',
+    '  <div class="fb-role"><span class="icon" data-icon="shield"></span>Supervisor feedback</div>',
+    '  <textarea class="textarea" placeholder="Respond to the employee…"></textarea>',
+    '</div>',
+    '<div class="fb-foot">',
+    '  <div class="stars">',
+    '    <button class="star" data-v="1"><span class="icon" data-icon="star"></span></button>',
+    '    <button class="star" data-v="2"><span class="icon" data-icon="star"></span></button>',
+    '    <button class="star" data-v="3"><span class="icon" data-icon="star"></span></button>',
+    '    <button class="star" data-v="4"><span class="icon" data-icon="star"></span></button>',
+    '    <button class="star" data-v="5"><span class="icon" data-icon="star"></span></button>',
+    '  </div>',
+    '  <span style="font-size:12.5px;color:var(--text-3)">Supervisor rating</span>',
+    '  <div class="fb-accept">',
+    '    <button class="btn btn-secondary btn-sm" onclick="removeCard(this)">Delete draft</button>',
+    '    <button class="btn btn-primary btn-sm" onclick="submitFeedback(this)"><span class="icon" data-icon="check"></span>Submit</button>',
+    '  </div>',
+    '</div>'
+  ].join('\n');
+  document.getElementById('fbList').appendChild(card);
+  refreshIcons();
+  toast('New message draft created');
+}
+document.getElementById('addFeedback').addEventListener('click', addFeedbackCard);
+
+function submitFeedback(btn) {
+  var card = btn.closest('.fb-card');
+  card.querySelector('.fb-status').textContent = 'Submitted, awaiting supervisor';
+  card.querySelector('.fb-status').style.color = 'var(--warning)';
+  var acc = card.querySelector('.fb-accept');
+  if (acc) acc.remove();
+  toast('Feedback submitted to supervisor (demo)');
+}
+
+function acceptFeedback(btn, accepted) {
+  var card = btn.closest('.fb-card');
+  var status = card.querySelector('.fb-status');
+  status.textContent = accepted ? 'Accepted' : 'Declined';
+  status.style.color = accepted ? 'var(--success)' : 'var(--danger)';
+  var acc = card.querySelector('.fb-accept');
+  if (acc) acc.remove();
+  toast(accepted ? 'Accepted by employee' : 'Declined by employee');
+}
+
+/* star rating */
+document.body.addEventListener('click', function (e) {
+  var star = e.target.closest('.stars .star');
+  if (!star) return;
+  var box = star.closest('.stars');
+  if (box.hasAttribute('data-readonly')) return;
+  var score = +star.getAttribute('data-v');
+  box.setAttribute('data-score', score);
+  box.querySelectorAll('.star').forEach(function (s) {
+    s.classList.toggle('on', +s.getAttribute('data-v') <= score);
+  });
+  toast('Supervisor rating set to ' + score + ' / 5');
+});
+
+/* ---------------- misc helpers ---------------- */
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+function refreshIcons() {
+  document.querySelectorAll('[data-icon]:empty').forEach(function (el) {
+    var name = el.getAttribute('data-icon');
+    if (ICONS[name]) el.innerHTML = ICONS[name];
+  });
+}
+
+/* init */
+renderYos();
+calcSalary();
+toggleSalaryLock();
+</script>
+</body>
+</html>
