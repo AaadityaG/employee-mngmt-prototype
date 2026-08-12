@@ -845,10 +845,6 @@
           <span class="pill pill-perm" id="flagVal"><span class="icon" data-icon="check"></span>Permanent</span>
           <span class="pill pill-type"><span class="icon" data-icon="shield"></span>EWAI Employee</span>
           <span class="pill pill-active"><span class="icon" data-icon="check"></span>Active</span>
-          <label class="switch only-supervisor" title="Permanent / Part-time flag">
-            <input type="checkbox" id="permFlag" checked />
-            <span class="track"></span>
-          </label>
         </div>
       </div>
       <div class="emp-actions">
@@ -902,6 +898,16 @@
               <option>Human Resources</option>
               <option>Finance</option>
               <option>Operations</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label">Employment type</span>
+            <select class="select" id="pEmpType">
+              <option selected>Permanent</option>
+              <option>Part-time</option>
+              <option>Contract</option>
+              <option>Intern</option>
+              <option>Freelance</option>
             </select>
           </label>
           <label class="field">
@@ -1856,7 +1862,7 @@ function setRole(role) {
       text.textContent = 'All tabs editable. You can maintain salary, assign assets, and manage any employee document.';
     }
   }
-  permFlag.disabled = role !== 'supervisor';
+  pEmpType.disabled = role !== 'supervisor';
   ewaiToggle.disabled = role !== 'supervisor';
   ['#panel-employment', '#panel-kyc', '#panel-assets'].forEach(function (sel) {
     document.querySelectorAll(sel + ' input, ' + sel + ' select').forEach(function (el) {
@@ -1868,16 +1874,24 @@ function setRole(role) {
 document.getElementById('roleEmployee').addEventListener('click', function () { setRole('employee'); toast('Switched to Employee view'); });
 document.getElementById('roleSupervisor').addEventListener('click', function () { setRole('supervisor'); toast('Switched to Supervisor view'); });
 
-/* ---------------- permanent / part-time flag ---------------- */
-var permFlag = document.getElementById('permFlag');
+/* ---------------- employment type (select → badge sync) ---------------- */
+var pEmpType = document.getElementById('pEmpType');
 var flagVal = document.getElementById('flagVal');
-permFlag.addEventListener('change', function () {
-  var permanent = permFlag.checked;
-  var label = permanent ? 'Permanent' : 'Part-time';
-  flagVal.classList.toggle('pill-perm', permanent);
-  flagVal.classList.toggle('pill-part', !permanent);
+var empTypeBadgeMap = {
+  'Permanent': 'pill-perm',
+  'Part-time': 'pill-part',
+  'Contract': 'pill-type',
+  'Intern': 'pill-type',
+  'Freelance': 'pill-type'
+};
+function syncEmpTypeBadge(type) {
+  var label = type || 'Permanent';
+  flagVal.className = 'pill ' + (empTypeBadgeMap[label] || 'pill-perm');
   flagVal.innerHTML = '<span class="icon">' + ICONS.check + '</span>' + label;
-  toast(permanent ? 'Flag set: Permanent' : 'Flag set: Part-time');
+}
+pEmpType.addEventListener('change', function () {
+  syncEmpTypeBadge(pEmpType.value);
+  toast('Employment type: ' + pEmpType.value);
 });
 
 /* ---------------- years of service ---------------- */
@@ -2294,6 +2308,7 @@ function pfBuildPersonal() {
   h += pfField('Full name', pfInputControl('pName'), { req: true });
   h += pfField('Role / Designation', pfInputControl('pRole'));
   h += pfField('Team / Department', pfSelectControl('pTeam'));
+  h += pfField('Employment type', pfSelectControl('pEmpType'));
   h += pfField('Gender', pfSelectControl('pGender'));
   h += pfField('Marital status', pfSelectControl('pMarital'));
   h += pfField('Nationality', pfSelectControl('pNationality'));
