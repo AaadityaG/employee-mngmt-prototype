@@ -960,21 +960,7 @@
           </div>
         </div>
 
-        <div class="sub-head">Current address</div>
-        <div class="form-grid">
-          <label class="field"><span class="field-label">Address line 1</span><input class="input" id="cAddr1" value="204, Crystal Heights, Baner Road" /></label>
-          <label class="field"><span class="field-label">Address line 2</span><input class="input" id="cAddr2" value="Near Balewadi Stadium" /></label>
-          <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" id="cPin" value="411045" maxlength="6" /></label>
-          <label class="field"><span class="field-label">City</span>
-            <select class="select" id="cCity"><option selected>Pune</option><option>Mumbai</option><option>Bengaluru</option></select>
-          </label>
-          <label class="field"><span class="field-label">State</span>
-            <select class="select" id="cState"><option selected>Maharashtra</option><option>Karnataka</option></select>
-          </label>
-          <label class="field"><span class="field-label">Country</span>
-            <select class="select" id="cCountry"><option selected>India</option></select>
-          </label>
-        </div>
+       
 
         <div class="sub-head">Permanent address</div>
         <div class="form-grid">
@@ -992,7 +978,32 @@
           </label>
         </div>
 
-        <div class="sub-head">Emergency address</div>
+         <div class="sub-head">Current address</div>
+        <div class="form-grid">
+          <label class="field"><span class="field-label">Address line 1</span><input class="input" id="cAddr1" value="204, Crystal Heights, Baner Road" /></label>
+          <label class="field"><span class="field-label">Address line 2</span><input class="input" id="cAddr2" value="Near Balewadi Stadium" /></label>
+          <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" id="cPin" value="411045" maxlength="6" /></label>
+          <label class="field"><span class="field-label">City</span>
+            <select class="select" id="cCity"><option selected>Pune</option><option>Mumbai</option><option>Bengaluru</option></select>
+          </label>
+          <label class="field"><span class="field-label">State</span>
+            <select class="select" id="cState"><option selected>Maharashtra</option><option>Karnataka</option></select>
+          </label>
+          <label class="field"><span class="field-label">Country</span>
+            <select class="select" id="cCountry"><option selected>India</option></select>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="phone"></span></span>
+          <div>
+            <h2>Emergency address &amp; contact</h2>
+            <p>Primary contact and address for emergencies.</p>
+          </div>
+        </div>
         <div class="form-grid">
           <label class="field"><span class="field-label">Address line 1</span><input class="input" id="eaAddr1" value="35, MG Road" /></label>
           <label class="field"><span class="field-label">Address line 2</span><input class="input" id="eaAddr2" value="Camp Area" /></label>
@@ -1007,17 +1018,8 @@
             <select class="select" id="eaCountry"><option selected>India</option></select>
           </label>
         </div>
-      </div>
-
-      <div class="section">
-        <div class="section-head">
-          <span class="head-icon"><span class="icon" data-icon="phone"></span></span>
-          <div>
-            <h2>Emergency contact</h2>
-            <p>Primary contact for emergencies, with country code.</p>
-          </div>
-        </div>
-        <div class="form-grid cols-2">
+        <div class="sub-head">Emergency contact</div>
+        <div class="form-grid">
           <label class="field"><span class="field-label">Contact name</span><input class="input" id="ecName" value="Rohit Sharma" /></label>
           <label class="field">
             <span class="field-label">Mobile number</span>
@@ -1025,6 +1027,9 @@
               <span class="prefix">+91</span>
               <input class="input" id="ecMobile" value="98220 12345" />
             </div>
+          </label>
+          <label class="field"><span class="field-label">Relation</span>
+            <select class="select" id="ecRelation"><option selected>Father</option><option>Mother</option><option>Spouse</option><option>Sibling</option><option>Friend</option><option>Other</option></select>
           </label>
         </div>
       </div>
@@ -1051,23 +1056,21 @@
           </label>
           <label class="field">
             <span class="field-label">Probation period</span>
-            <select class="select" id="probation">
-              <option>1 month</option>
-              <option selected>3 months</option>
-              <option>6 months</option>
-              <option>9 months</option>
-              <option>12 months</option>
-            </select>
+            <div class="field-wrap" style="display:flex;gap:8px;align-items:center">
+              <input class="input is-mono" id="probationNum" type="number" min="1" value="3" style="flex:1;min-width:0" />
+              <select class="select" id="probationUnit" style="flex:1;min-width:0">
+                <option>Days</option>
+                <option>Weeks</option>
+                <option selected>Months</option>
+              </select>
+            </div>
           </label>
           <label class="field">
             <span class="field-label">Confirmation date</span>
             <input class="input" type="date" id="confDate" value="2021-06-12" />
           </label>
         </div>
-        <div class="callout callout-info" style="margin-top:16px">
-          <span class="icon" data-icon="clock"></span>
-          <span>Years of service is auto-computed as <strong>today − joining date</strong>. Currently <strong id="yosInline">5 years, 5 months</strong>.</span>
-        </div>
+       
       </div>
 
       <div class="section">
@@ -1083,22 +1086,24 @@
         <div class="table-wrap">
           <table class="table">
             <thead>
-              <tr><th>Company</th><th>Role</th><th>Start</th><th>End</th><th>Description</th><th></th></tr>
+              <tr><th>#</th><th>Company</th><th>Role</th><th>Start</th><th>End</th><th>Description</th><th></th></tr>
             </thead>
             <tbody id="expBody">
               <tr>
+                <td>2</td>
                 <td><input class="input" value="CloudSprint Technologies" /></td>
                 <td><input class="input" value="HR Generalist" /></td>
-                <td><input class="input" type="month" value="2017-07" /></td>
-                <td><input class="input" type="month" value="2021-01" /></td>
+                <td><input class="input" type="date" value="2017-07-01" /></td>
+                <td><input class="input" type="date" value="2021-01-31" /></td>
                 <td><input class="input" value="Generalist covering payroll and recruitment" /></td>
                 <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
               </tr>
               <tr>
+                <td>1</td>
                 <td><input class="input" value="Zenith Manufacturing" /></td>
                 <td><input class="input" value="Recruitment Coordinator" /></td>
-                <td><input class="input" type="month" value="2015-06" /></td>
-                <td><input class="input" type="month" value="2017-06" /></td>
+                <td><input class="input" type="date" value="2015-06-01" /></td>
+                <td><input class="input" type="date" value="2017-06-30" /></td>
                 <td><input class="input" value="Volume hiring for plant and field roles" /></td>
                 <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
               </tr>
@@ -1184,17 +1189,19 @@
         <div class="table-wrap">
           <table class="table">
             <thead>
-              <tr><th>Certificate name</th><th>Obtained date</th><th></th></tr>
+              <tr><th>Certificate name</th><th>Obtained date</th><th>Link</th><th></th></tr>
             </thead>
             <tbody id="certBody">
               <tr>
                 <td><input class="input" value="HR Analytics Certification, LinkedIn Learning" /></td>
                 <td><input class="input" type="date" value="2023-05-12" /></td>
+                <td><input class="input" type="url" placeholder="https://..." value="https://www.linkedin.com/learning/hr-analytics" /></td>
                 <td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
               </tr>
               <tr>
                 <td><input class="input" value="POSH Training, SHRM India" /></td>
                 <td><input class="input" type="date" value="2024-11-28" /></td>
+                <td><input class="input" type="url" placeholder="https://..." /></td>
                 <td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
               </tr>
             </tbody>
@@ -1458,6 +1465,7 @@
           <span class="icon" data-icon="eye"></span>
           <span>Documents are stored securely in the employee record. Upload a new file to update the current document.</span>
         </div>
+        <div class="sub-head">Uploaded documents</div>
         <div class="table-wrap">
           <table class="table">
             <thead>
@@ -1474,7 +1482,7 @@
                 <td id="latest-identity"><span class="cell-strong">aadhaar_v3.pdf</span> <span class="doc-empty" style="font-size:12px">· 14 Jan 2026</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('identity')"><span class="icon" data-icon="upload"></span>Upload</button>
+                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('identity')"><span class="icon" data-icon="upload"></span>Re-upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('identity')"><span class="icon" data-icon="eye"></span>Show</button>
                   <button class="btn btn-ghost btn-sm" onclick="toast('Downloading aadhaar_v3.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
                 </td>
@@ -1489,7 +1497,7 @@
                 <td id="latest-education"><span class="cell-strong">mba_degree.pdf</span> <span class="doc-empty" style="font-size:12px">· 02 Jul 2024</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('education')"><span class="icon" data-icon="upload"></span>Upload</button>
+                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('education')"><span class="icon" data-icon="upload"></span>Re-upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('education')"><span class="icon" data-icon="eye"></span>Show</button>
                   <button class="btn btn-ghost btn-sm" onclick="toast('Downloading mba_degree.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
                 </td>
@@ -1500,7 +1508,7 @@
                 <td id="latest-offer"><span class="cell-strong">increment_2026.pdf</span> <span class="doc-empty" style="font-size:12px">· 01 Apr 2026</span></td>
                 <td>HR · Mayank K.</td>
                 <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('offer')"><span class="icon" data-icon="upload"></span>Upload</button>
+                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('offer')"><span class="icon" data-icon="upload"></span>Re-upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('offer')"><span class="icon" data-icon="eye"></span>Show</button>
                   <button class="btn btn-ghost btn-sm" onclick="toast('Downloading increment_2026.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
                 </td>
@@ -1515,7 +1523,7 @@
                 <td id="latest-form16"><span class="cell-strong">form16_fy2526.pdf</span> <span class="doc-empty" style="font-size:12px">· 20 May 2026</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('form16')"><span class="icon" data-icon="upload"></span>Upload</button>
+                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('form16')"><span class="icon" data-icon="upload"></span>Re-upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('form16')"><span class="icon" data-icon="eye"></span>Show</button>
                   <button class="btn btn-ghost btn-sm" onclick="toast('Downloading form16_fy2526.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
                 </td>
@@ -1526,16 +1534,30 @@
                 <td id="latest-shares"><span class="cell-strong">esop_grant_2024.pdf</span> <span class="doc-empty" style="font-size:12px">· 12 Aug 2024</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('shares')"><span class="icon" data-icon="upload"></span>Upload</button>
+                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('shares')"><span class="icon" data-icon="upload"></span>Re-upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('shares')"><span class="icon" data-icon="eye"></span>Show</button>
                   <button class="btn btn-ghost btn-sm" onclick="toast('Downloading esop_grant_2024.pdf… (demo)')"><span class="icon" data-icon="download"></span></button>
                 </td>
               </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sub-head" style="margin-top:24px">Pending uploads</div>
+        <div class="callout callout-warn" style="margin-bottom:16px">
+          <span class="icon" data-icon="alert"></span>
+          <span>The following documents have not been uploaded yet. Please upload them at your earliest convenience.</span>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Document</th><th>Type / Year</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="pendingDocBody">
               <tr data-doc="resignation">
                 <td class="cell-strong">Resignation letter</td>
                 <td><span class="doc-empty">–</span></td>
-                <td id="latest-resignation"><span class="doc-empty">Not uploaded</span></td>
-                <td>–</td>
+                <td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm" onclick="uploadDoc('resignation')"><span class="icon" data-icon="upload"></span>Upload</button>
                 </td>
@@ -1543,8 +1565,7 @@
               <tr data-doc="acceptance">
                 <td class="cell-strong">Resignation acceptance letter</td>
                 <td><span class="doc-empty">–</span></td>
-                <td id="latest-acceptance"><span class="doc-empty">Not uploaded</span></td>
-                <td>–</td>
+                <td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm" onclick="uploadDoc('acceptance')"><span class="icon" data-icon="upload"></span>Upload</button>
                 </td>
@@ -1556,8 +1577,7 @@
                     <input class="input" style="width:190px;font-size:12.5px" type="email" placeholder="person email…" value="yash.sharma@easework.in" />
                   </span>
                 </td>
-                <td id="latest-relieving"><span class="doc-empty">Not uploaded</span></td>
-                <td>–</td>
+                <td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm only-supervisor" onclick="uploadDoc('relieving')"><span class="icon" data-icon="upload"></span>Upload</button>
                   <button class="btn btn-ghost btn-sm only-employee" onclick="toast('Relieving letter upload is available to the supervisor role only')"><span class="icon" data-icon="lock"></span></button>
@@ -1565,6 +1585,10 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="inline-add" style="margin-top:16px">
+          <input class="input" id="customDocName" placeholder="Enter document name…" style="max-width:280px" />
+          <button class="btn btn-secondary btn-sm" onclick="addCustomDoc()"><span class="icon" data-icon="plus"></span>Add custom document</button>
         </div>
       </div>
     </section>
@@ -1915,7 +1939,8 @@ function renderYos() {
   var label = r.years + 'y ' + r.months + 'm';
   var pretty = r.years + ' year' + (r.years === 1 ? '' : 's') + ', ' + r.months + ' month' + (r.months === 1 ? '' : 's');
   document.getElementById('yosValue').textContent = label;
-  document.getElementById('yosInline').textContent = pretty;
+  var yosInline = document.getElementById('yosInline');
+  if (yosInline) yosInline.textContent = pretty;
 }
 document.getElementById('joiningDate').addEventListener('change', renderYos);
 
@@ -1970,18 +1995,26 @@ function addRow(tbodyId, cells) {
 }
 function removeRow(btn) {
   btn.closest('tr').remove();
+  reIndexExp();
   toast('Row removed');
+}
+function reIndexExp() {
+  var rows = document.querySelectorAll('#expBody tr');
+  var total = rows.length;
+  rows.forEach(function (tr, i) { var td = tr.querySelector('td'); if (td) td.textContent = (total - i); });
 }
 function removeCard(btn) {
   btn.closest('.fb-card').remove();
   toast('Draft deleted');
 }
 document.getElementById('addExperience').addEventListener('click', function () {
+  var idx = document.querySelectorAll('#expBody tr').length + 1;
   addRow('expBody', [
+    '<td>' + idx + '</td>',
     '<td><input class="input" placeholder="Company name"/></td>',
     '<td><input class="input" placeholder="Role"/></td>',
-    '<td><input class="input" type="month"/></td>',
-    '<td><input class="input" type="month"/></td>',
+    '<td><input class="input" type="date"/></td>',
+    '<td><input class="input" type="date"/></td>',
     '<td><input class="input" placeholder="Job description"/></td>',
     '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
   ].join(''));
@@ -2004,6 +2037,7 @@ document.getElementById('addCertificate').addEventListener('click', function () 
   addRow('certBody', [
     '<td><input class="input" placeholder="Certificate name"/></td>',
     '<td><input class="input" type="date"/></td>',
+    '<td><input class="input" type="url" placeholder="https://..."/></td>',
     '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
   ].join(''));
   refreshIcons();
@@ -2321,9 +2355,8 @@ function pfBuildPersonal() {
   h += '</div>';
 
   var groups = [
-    { sub: 'Current address', line1: 'cAddr1', line2: 'cAddr2', pin: 'cPin', city: 'cCity', state: 'cState', country: 'cCountry' },
     { sub: 'Permanent address', line1: 'pAddr1', line2: 'pAddr2', pin: 'pPin', city: 'pCity', state: 'pState', country: 'pCountry' },
-    { sub: 'Emergency address', line1: 'eaAddr1', line2: 'eaAddr2', pin: 'eaPin', city: 'eaCity', state: 'eaState', country: 'eaCountry' }
+    { sub: 'Current address', line1: 'cAddr1', line2: 'cAddr2', pin: 'cPin', city: 'cCity', state: 'cState', country: 'cCountry' }
   ];
   groups.forEach(function (g) {
     h += '<div class="pf-subhead"><span class="icon" data-icon="pin"></span>' + g.sub + '</div>';
@@ -2337,10 +2370,20 @@ function pfBuildPersonal() {
     h += '</div>';
   });
 
-  h += '<div class="pf-subhead"><span class="icon" data-icon="phone"></span>Emergency contact</div>';
+  h += '<div class="pf-subhead"><span class="icon" data-icon="phone"></span>Emergency address &amp; contact</div>';
+  h += '<div class="pf-grid">';
+  h += pfField('Address line 1', pfInputControl('eaAddr1'));
+  h += pfField('Address line 2', pfInputControl('eaAddr2'));
+  h += pfField('Pincode', pfInputControl('eaPin', { maxlength: '6' }));
+  h += pfField('City', pfSelectControl('eaCity'));
+  h += pfField('State', pfSelectControl('eaState'));
+  h += pfField('Country', pfSelectControl('eaCountry'));
+  h += '</div>';
+  h += '<div class="pf-subhead">Emergency contact</div>';
   h += '<div class="pf-grid">';
   h += pfField('Contact name', pfInputControl('ecName'));
   h += pfField('Mobile number', '<div class="field-wrap"><span class="prefix">+91</span>' + pfInputControl('ecMobile') + '</div>');
+  h += pfField('Relation', pfSelectControl('ecRelation'));
   h += '</div>';
   return h;
 }
@@ -2365,7 +2408,10 @@ function pfBuildEmployment() {
   h += '<div class="pf-subhead"><span class="icon" data-icon="briefcase"></span>Employment record</div>';
   h += '<div class="pf-grid">';
   h += pfField('Joining date', pfInputControl('joiningDate', { type: 'date' }));
-  h += pfField('Probation period', pfSelectControl('probation'));
+  h += '<div class="pf-field"><label class="pf-label">Probation period</label><div style="display:flex;gap:8px;align-items:center">';
+  h += '<div style="flex:1;min-width:0">' + pfInputControl('probationNum', { type: 'number', min: '1' }) + '</div>';
+  h += '<div style="flex:1;min-width:0">' + pfSelectControl('probationUnit') + '</div>';
+  h += '</div></div>';
   h += pfField('Confirmation date', pfInputControl('confDate', { type: 'date' }));
   h += '</div>';
 
@@ -2375,7 +2421,7 @@ function pfBuildEmployment() {
 
   h += '<div class="pf-subhead"><span class="icon" data-icon="layers"></span>Experience</div>';
   h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
-    '<thead><tr><th>Company name</th><th>Role</th><th>Start</th><th>End</th><th>Job description</th><th></th></tr></thead>' +
+    '<thead><tr><th>#</th><th>Company name</th><th>Role</th><th>Start</th><th>End</th><th>Job description</th><th></th></tr></thead>' +
     '<tbody id="pfExpBody">' + (PF_ADD_MODE ? '' : document.getElementById('expBody').innerHTML) + '</tbody></table></div>';
   return h;
 }
@@ -2407,7 +2453,7 @@ function pfBuildSkills() {
 
   h += '<div class="pf-subhead"><span class="icon" data-icon="award"></span>Certificates</div>';
   h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
-    '<thead><tr><th>Certificate name</th><th>Obtained date</th><th></th></tr></thead>' +
+    '<thead><tr><th>Certificate name</th><th>Obtained date</th><th>Link</th><th></th></tr></thead>' +
     '<tbody id="pfCertBody">' + (PF_ADD_MODE ? '' : document.getElementById('certBody').innerHTML) + '</tbody></table></div>';
   return h;
 }
@@ -2501,15 +2547,49 @@ function pfBuildDocuments() {
   var h = '';
   h += '<div class="callout callout-info" style="margin-bottom:14px"><span class="icon" data-icon="eye"></span>' +
     '<span>Upload a new file to update the current document. Employees edit their own; supervisors can manage any document.</span></div>';
+  h += '<div class="pf-subhead">Uploaded documents</div>';
   h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
     '<thead><tr><th>Document</th><th>Type / Year</th><th>Current document</th><th>Uploaded by</th><th>Actions</th></tr></thead>' +
     '<tbody id="pfDocBody">' + (PF_ADD_MODE ? '<tr><td colspan="5"><span class="doc-empty">No documents yet. Upload after the employee record is created.</span></td></tr>' : document.getElementById('docBody').innerHTML) + '</tbody></table></div>';
+  h += '<div class="pf-subhead" style="margin-top:20px">Pending uploads</div>';
+  h += '<div class="callout callout-warn" style="margin-bottom:12px"><span class="icon" data-icon="alert"></span>' +
+    '<span>The following documents have not been uploaded yet.</span></div>';
+  h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
+    '<thead><tr><th>Document</th><th>Type / Year</th><th>Status</th><th>Actions</th></tr></thead>' +
+    '<tbody id="pfPendingDocBody">' + (PF_ADD_MODE ? '' : document.getElementById('pendingDocBody').innerHTML) + '</tbody></table></div>';
+  h += '<div class="inline-add" style="margin-top:12px"><input class="input" id="pfCustomDocName" placeholder="Enter document name…" style="max-width:280px" />';
+  h += '<button class="btn btn-secondary btn-sm" onclick="pfAddCustomDoc()"><span class="icon" data-icon="plus"></span>Add custom document</button></div>';
   return h;
 }
+function pfAddCustomDoc() {
+  var name = (document.getElementById('pfCustomDocName').value || '').trim();
+  if (!name) { toast('Please enter a document name'); return; }
+  addRow('pfPendingDocBody', [
+    '<td class="cell-strong">' + escapeHtml(name) + '</td>',
+    '<td><span class="doc-empty">–</span></td>',
+    '<td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>',
+    '<td class="actions"><button class="btn btn-secondary btn-sm" onclick="uploadDoc(this)"><span class="icon" data-icon="upload"></span>Upload</button></td>'
+  ].join(''));
+  document.getElementById('pfCustomDocName').value = '';
+  toast('Custom document added');
+}
+
 function pfPostDocuments() {
   var body = document.getElementById('pfDocBody');
   if (!body) return;
   body.querySelectorAll('[id]').forEach(function (el) { el.id = 'pf-' + el.id; });
+}
+function addCustomDoc() {
+  var name = (document.getElementById('customDocName').value || '').trim();
+  if (!name) { toast('Please enter a document name'); return; }
+  addRow('pendingDocBody', [
+    '<td class="cell-strong">' + escapeHtml(name) + '</td>',
+    '<td><span class="doc-empty">–</span></td>',
+    '<td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>',
+    '<td class="actions"><button class="btn btn-secondary btn-sm" onclick="uploadDoc(this)"><span class="icon" data-icon="upload"></span>Upload</button></td>'
+  ].join(''));
+  document.getElementById('customDocName').value = '';
+  toast('Custom document added');
 }
 
 /* ---- Assets ---- */
