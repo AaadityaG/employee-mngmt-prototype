@@ -663,6 +663,7 @@
   /* role visibility */
   body[data-role="employee"] .only-supervisor { display: none !important; }
   body[data-role="supervisor"] .only-employee { display: none !important; }
+  body[data-role="employee"] .sidebar { display: none !important; }
 
   /* ================= TOAST ================= */
   .toast-wrap { position: fixed; right: 20px; bottom: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
@@ -774,7 +775,7 @@
   <span class="sep"><span class="icon" data-icon="chevron"></span></span>
   <span class="crumb" onclick="toast('Employee Management list')">Employee Management</span>
   <span class="sep"><span class="icon" data-icon="chevron"></span></span>
-  <span class="current" id="crumbName">Ananya Sharma</span>
+  <span class="current" id="crumbName">Yash Sharma</span>
 </nav>
 
 <div class="layout">
@@ -797,9 +798,9 @@
     <div class="side-list" id="userList">
       <div class="side-label" id="sideListLabel">All users</div>
 
-      <div class="emp-item selected" data-user='{"name":"Ananya Sharma","sub":"EMP-0142 · Engineering · HR Analyst","initials":"AS","color":"#5B20E8","active":true}'>
+      <div class="emp-item selected" data-user='{"name":"Yash Sharma","sub":"EMP-0142 · Engineering · HR Analyst","initials":"AS","color":"#5B20E8","active":true}'>
         <span class="emp-av" style="background:#5B20E8">AS<span class="dot"></span></span>
-        <span class="emp-info"><span class="name">Ananya Sharma</span><span class="sub">EMP-0142 · Engineering · HR Analyst</span></span>
+        <span class="emp-info"><span class="name">Yash Sharma</span><span class="sub">EMP-0142 · Engineering · HR Analyst</span></span>
       </div>
 
       <div class="emp-item" data-user='{"name":"Mayank K.","sub":"EMP-0007 · Human Resources · HR Manager","initials":"MK","color":"#0E7490","active":true}'>
@@ -836,10 +837,10 @@
       </div>
       <div class="emp-main">
         <div class="emp-name-row">
-          <h1 class="emp-name"><span id="detailName">Ananya Sharma</span></h1>
+          <h1 class="emp-name"><span id="detailName">Yash Sharma</span></h1>
           <span class="role-badge" id="detailRole">HR Analyst</span>
         </div>
-        <div class="emp-email"><span class="icon" data-icon="mail"></span><span id="detailEmail">ananya.sharma@easework.in</span></div>
+        <div class="emp-email"><span class="icon" data-icon="mail"></span><span id="detailEmail">yash.sharma@easework.in</span></div>
         <div class="emp-pills">
           <span class="pill pill-dept" id="detailDept"><span class="icon" data-icon="building"></span>Engineering</span>
           <span class="pill pill-perm" id="flagVal"><span class="icon" data-icon="check"></span>Permanent</span>
@@ -889,7 +890,7 @@
           <button class="btn btn-secondary btn-sm" onclick="pfOpen('personal')"><span class="icon" data-icon="edit"></span>Edit</button>
         </div>
         <div class="form-grid">
-          <label class="field"><span class="field-label">Full name <span class="req">*</span></span><input class="input" id="pName" value="Ananya Sharma" /></label>
+          <label class="field"><span class="field-label">Full name <span class="req">*</span></span><input class="input" id="pName" value="Yash Sharma" /></label>
           <label class="field"><span class="field-label">Role / Designation</span><input class="input" id="pRole" value="HR Analyst" /></label>
           <label class="field"><span class="field-label">Team / Department</span>
             <select class="select" id="pTeam">
@@ -1340,7 +1341,7 @@
         </div>
         <div class="form-grid">
           <label class="field"><span class="field-label">Bank name</span><input class="input" id="bBank" value="HDFC Bank" /></label>
-          <label class="field"><span class="field-label">Account holder name</span><input class="input" id="bHolder" value="Ananya Sharma" /></label>
+          <label class="field"><span class="field-label">Account holder name</span><input class="input" id="bHolder" value="Yash Sharma" /></label>
           <label class="field"><span class="field-label">Account number</span><input class="input is-mono" id="bAccount" value="5020 0012 3456 7890" /></label>
           <label class="field"><span class="field-label">IFSC code</span><input class="input is-mono" id="bIfsc" value="HDFC0001234" /></label>
           <label class="field">
@@ -1471,7 +1472,7 @@
                   </select>
                 </td>
                 <td id="latest-identity"><span class="cell-strong">aadhaar_v3.pdf</span> <span class="doc-empty" style="font-size:12px">· 14 Jan 2026</span></td>
-                <td>Ananya Sharma</td>
+                <td>Yash Sharma</td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm" onclick="uploadDoc('identity')"><span class="icon" data-icon="upload"></span>Upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('identity')"><span class="icon" data-icon="eye"></span>Show</button>
@@ -1486,7 +1487,7 @@
                   </select>
                 </td>
                 <td id="latest-education"><span class="cell-strong">mba_degree.pdf</span> <span class="doc-empty" style="font-size:12px">· 02 Jul 2024</span></td>
-                <td>Ananya Sharma</td>
+                <td>Yash Sharma</td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm" onclick="uploadDoc('education')"><span class="icon" data-icon="upload"></span>Upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('education')"><span class="icon" data-icon="eye"></span>Show</button>
@@ -1512,7 +1513,7 @@
                   </select>
                 </td>
                 <td id="latest-form16"><span class="cell-strong">form16_fy2526.pdf</span> <span class="doc-empty" style="font-size:12px">· 20 May 2026</span></td>
-                <td>Ananya Sharma</td>
+                <td>Yash Sharma</td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm" onclick="uploadDoc('form16')"><span class="icon" data-icon="upload"></span>Upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('form16')"><span class="icon" data-icon="eye"></span>Show</button>
@@ -1523,7 +1524,7 @@
                 <td class="cell-strong">Employee shares</td>
                 <td><span class="doc-empty">–</span></td>
                 <td id="latest-shares"><span class="cell-strong">esop_grant_2024.pdf</span> <span class="doc-empty" style="font-size:12px">· 12 Aug 2024</span></td>
-                <td>Ananya Sharma</td>
+                <td>Yash Sharma</td>
                 <td class="actions">
                   <button class="btn btn-secondary btn-sm" onclick="uploadDoc('shares')"><span class="icon" data-icon="upload"></span>Upload</button>
                   <button class="btn btn-ghost btn-sm" onclick="showDoc('shares')"><span class="icon" data-icon="eye"></span>Show</button>
@@ -1552,7 +1553,7 @@
                 <td class="cell-strong">Relieving letter</td>
                 <td>
                   <span class="field-wrap only-supervisor" style="display:inline-block;vertical-align:middle">
-                    <input class="input" style="width:190px;font-size:12.5px" type="email" placeholder="person email…" value="ananya.sharma@easework.in" />
+                    <input class="input" style="width:190px;font-size:12.5px" type="email" placeholder="person email…" value="yash.sharma@easework.in" />
                   </span>
                 </td>
                 <td id="latest-relieving"><span class="doc-empty">Not uploaded</span></td>
@@ -1690,7 +1691,7 @@
       <span class="head-icon"><span class="icon" data-icon="file"></span></span>
       <div>
         <div class="doc-modal-title" id="docModalTitle">Document</div>
-        <div class="doc-modal-sub" id="docModalSub">Ananya Sharma · EMP-0142</div>
+        <div class="doc-modal-sub" id="docModalSub">Yash Sharma · EMP-0142</div>
       </div>
       <span class="spacer"></span>
       <button class="btn btn-ghost btn-sm" onclick="closeDoc()" aria-label="Close"><span class="icon" data-icon="x"></span></button>
@@ -1818,6 +1819,12 @@ function filterUsers(q) {
 
 /* ---------------- sidebar: role-based visibility ---------------- */
 function updateSidebarForRole(role) {
+  var sidebar = document.querySelector('.sidebar');
+  if (role === 'employee') {
+    sidebar.style.display = 'none';
+  } else {
+    sidebar.style.display = '';
+  }
   document.querySelectorAll('#userList .emp-item').forEach(function (item) {
     var hidden = role === 'employee' && !item.classList.contains('selected');
     item.setAttribute('data-role-hidden', hidden ? '1' : '0');
@@ -1854,7 +1861,7 @@ function setRole(role) {
   if (pill) {
     if (role === 'employee') {
       pill.innerHTML = '<span class="icon" data-icon="user"></span>Employee view';
-      text.textContent = 'Viewing as Ananya Sharma (employee). Salary and assets are read-only; raise feedback or accept supervisor responses.';
+      text.textContent = 'Viewing as Yash Sharma (employee). Salary and assets are read-only; raise feedback or accept supervisor responses.';
     } else {
       pill.innerHTML = '<span class="icon" data-icon="shield"></span>Supervisor view';
       text.textContent = 'All tabs editable. You can maintain salary, assign assets, and manage any employee document.';
