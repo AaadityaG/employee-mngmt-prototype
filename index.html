@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿?<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -270,6 +270,7 @@
   .pill-part { color: var(--amber); background: var(--amber-soft); border-color: var(--amber-border); }
   .pill-type { color: #9A5B13; background: #FBF3E2; }
   .pill-active { color: var(--green); background: var(--green-soft); }
+  .pill-inactive { color: var(--red); background: var(--red-soft); }
 
   .emp-actions { margin-left: auto; display: flex; gap: 10px; flex: none; align-self: flex-start; }
   .emp-action {
@@ -289,6 +290,16 @@
   .emp-meta .em { display: inline-flex; align-items: center; gap: 6px; }
   .emp-meta .em .icon { width: 14px; height: 14px; }
   .emp-meta .em b { color: var(--text-2); font-weight: 600; }
+  .emp-status-btn {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
+    height: 30px; padding: 0 14px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer; line-height: 1;
+    border: 1px solid var(--green-border); background: var(--green-soft); color: var(--green);
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .emp-status-btn:hover { filter: brightness(.97); }
+  .emp-status-btn.is-inactive { border-color: var(--red-border); background: var(--red-soft); color: var(--red); }
+  .emp-status-btn .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
   /* ================= TABS ================= */
   .tabs {
@@ -496,6 +507,103 @@
   .sal-total .lbl .icon { width: 16px; height: 16px; }
   .sal-total .amount { font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
   .sal-total .formula { font-size: 12px; opacity: .75; }
+
+  /* Compact employee salary view */
+  .sal-compact { margin-bottom: 20px; }
+  .sc-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--surface-2); border: 1px solid var(--border-strong);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 8px;
+  }
+  .sc-period { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-3); }
+  .sc-period .icon { width: 14px; height: 14px; }
+  .sc-net { display: flex; align-items: baseline; gap: 10px; }
+  .sc-net span { font-size: 12px; color: var(--text-3); }
+  .sc-net b { font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: -.02em; }
+  .sc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .sc-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 12px; font-size: 12.5px; color: var(--text-3);
+  }
+  .sc-row b { font-weight: 600; color: var(--text); }
+  .sc-row b.plus { color: var(--green); }
+  .sc-row b.minus { color: var(--red); }
+  .sc-row.sc-total { background: var(--purple-soft); border-color: var(--purple-border); color: var(--purple-dark); }
+  .sc-row.sc-total b { color: var(--purple-dark); }
+  .sc-foot { margin-top: 8px; font-size: 11.5px; color: var(--text-3); text-align: center; }
+
+
+  /* Payment History & KPI Cards */
+  .sal-kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .sal-kpi-card {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .sal-kpi-card:hover { border-color: var(--purple-border); box-shadow: var(--shadow-sm); }
+  .sal-kpi-card .kpi-lbl { font-size: 12px; font-weight: 600; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+  .sal-kpi-card .kpi-lbl .icon { width: 15px; height: 15px; color: var(--purple); }
+  .sal-kpi-card .kpi-val { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: -.02em; }
+  .sal-kpi-card .kpi-sub { font-size: 11.5px; color: var(--text-3); }
+
+  .sal-hist-toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .sal-hist-filters { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: 1; }
+
+  /* Payslip Voucher Modal */
+  .payslip-voucher {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px; font-size: 13px; color: var(--text);
+  }
+  .payslip-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    border-bottom: 2px solid var(--purple-soft); padding-bottom: 16px; margin-bottom: 18px;
+  }
+  .payslip-brand { font-size: 18px; font-weight: 800; color: var(--purple-dark); letter-spacing: -.02em; }
+  .payslip-subbrand { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .payslip-meta-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 18px; font-size: 12.5px;
+  }
+  .payslip-meta-item { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
+  .payslip-meta-item:last-child { border-bottom: 0; }
+  .payslip-meta-item .m-lbl { color: var(--text-3); font-weight: 500; }
+  .payslip-meta-item .m-val { color: var(--text); font-weight: 600; }
+
+  .payslip-table-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+  .payslip-box { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .payslip-box-title { background: var(--surface-2); padding: 8px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+  .payslip-row { display: flex; justify-content: space-between; padding: 8px 14px; font-size: 12.5px; border-bottom: 1px solid var(--border); }
+  .payslip-row:last-child { border-bottom: 0; }
+  .payslip-row.total-row { background: var(--surface-2); font-weight: 700; color: var(--text); font-size: 13px; }
+
+  .payslip-payout-banner {
+    background: linear-gradient(135deg, var(--purple-soft) 0%, #EEF2FF 100%);
+    border: 1px solid var(--purple-border); border-radius: 10px; padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px;
+  }
+  .payslip-payout-banner .p-lbl { font-size: 13px; font-weight: 600; color: var(--purple-dark); }
+  .payslip-payout-banner .p-words { font-size: 11.5px; color: var(--text-3); margin-top: 2px; font-style: italic; }
+  .payslip-payout-banner .p-amt { font-size: 24px; font-weight: 800; color: var(--purple-dark); letter-spacing: -.02em; }
+
+  /* File Upload Dropzone */
+  .file-dropzone {
+    border: 2px dashed var(--purple-border); border-radius: 10px;
+    padding: 20px 16px; text-align: center; background: var(--purple-soft);
+    cursor: pointer; transition: all .15s ease; position: relative;
+  }
+  .file-dropzone:hover { background: #EEF2FF; border-color: var(--purple); }
+  .file-dropzone .dz-icon { color: var(--purple); margin-bottom: 6px; }
+  .file-dropzone .dz-icon .icon { width: 28px; height: 28px; }
+  .file-dropzone .dz-txt { font-size: 13px; font-weight: 600; color: var(--text); }
+  .file-dropzone .dz-sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .file-preview-box {
+    display: flex; align-items: center; gap: 10px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 10px;
+  }
 
   /* ================= DOCUMENTS ================= */
   .doc-empty { color: var(--text-3); font-size: 12.5px; font-style: italic; }
@@ -798,9 +906,9 @@
     <div class="side-list" id="userList">
       <div class="side-label" id="sideListLabel">All users</div>
 
-      <div class="emp-item selected" data-user='{"name":"Yash Sharma","sub":"EMP-0142 · Engineering · HR Analyst","initials":"AS","color":"#5B20E8","active":true}'>
+      <div class="emp-item selected" data-user='{"name":"Yash Sharma","sub":"EMP-0142 · Engineering · Fullstack Engineer","initials":"AS","color":"#5B20E8","active":true}'>
         <span class="emp-av" style="background:#5B20E8">AS<span class="dot"></span></span>
-        <span class="emp-info"><span class="name">Yash Sharma</span><span class="sub">EMP-0142 · Engineering · HR Analyst</span></span>
+        <span class="emp-info"><span class="name">Yash Sharma</span><span class="sub">EMP-0142 · Engineering · Fullstack Engineer</span></span>
       </div>
 
       <div class="emp-item" data-user='{"name":"Mayank K.","sub":"EMP-0007 · Human Resources · HR Manager","initials":"MK","color":"#0E7490","active":true}'>
@@ -838,14 +946,14 @@
       <div class="emp-main">
         <div class="emp-name-row">
           <h1 class="emp-name"><span id="detailName">Yash Sharma</span></h1>
-          <span class="role-badge" id="detailRole">HR Analyst</span>
+          <span class="role-badge" id="detailRole">Fullstack Engineer</span>
         </div>
         <div class="emp-email"><span class="icon" data-icon="mail"></span><span id="detailEmail">yash.sharma@easework.in</span></div>
         <div class="emp-pills">
           <span class="pill pill-dept" id="detailDept"><span class="icon" data-icon="building"></span>Engineering</span>
           <span class="pill pill-perm" id="flagVal"><span class="icon" data-icon="check"></span>Permanent</span>
           <span class="pill pill-type"><span class="icon" data-icon="shield"></span>EWAI Employee</span>
-          <span class="pill pill-active"><span class="icon" data-icon="check"></span>Active</span>
+          <span class="pill pill-active" id="empActivePill"><span class="icon" data-icon="check"></span>Active</span>
         </div>
       </div>
       <div class="emp-actions">
@@ -857,6 +965,7 @@
         <span class="em"><span class="icon" data-icon="calendar"></span>Joined <b id="metaJoined">12 Mar 2021</b></span>
         <span class="em"><span class="icon" data-icon="clock"></span><b id="yosValue">5y 5m</b> service</span>
         <span class="em"><span class="icon" data-icon="shield"></span><b>Employee</b></span>
+        <button class="btn emp-status-btn" id="empStatusBtn" onclick="toggleEmpActive()"><span class="status-dot" id="empStatusDot"></span><span id="empStatusLabel">Active</span></button>
       </div>
     </div>
 
@@ -891,7 +1000,7 @@
         </div>
         <div class="form-grid">
           <label class="field"><span class="field-label">Full name <span class="req">*</span></span><input class="input" id="pName" value="Yash Sharma" /></label>
-          <label class="field"><span class="field-label">Role / Designation</span><input class="input" id="pRole" value="HR Analyst" /></label>
+          <label class="field"><span class="field-label">Role / Designation</span><input class="input" id="pRole" value="Fullstack Engineer" /></label>
           <label class="field"><span class="field-label">Team / Department</span>
             <select class="select" id="pTeam">
               <option selected>Engineering</option>
@@ -1045,7 +1154,6 @@
             <p>Maintained by the supervisor role; the employee can view only.</p>
           </div>
           <div class="spacer"></div>
-          <span class="badge b-gray only-supervisor">Supervisor maintain</span>
           <span class="badge b-indigo only-employee">View only</span>
           <button class="btn btn-secondary btn-sm" onclick="pfOpen('employment')"><span class="icon" data-icon="edit"></span>Edit</button>
         </div>
@@ -1330,10 +1438,7 @@
             <div class="v" id="kycUan">UAN-102345678901</div>
           </div>
         </div>
-        <div class="callout callout-sec" style="margin-top:16px">
-          <span class="icon" data-icon="lock"></span>
-          <span>Your PAN and Aadhaar are <strong>encrypted and stored securely</strong> per the <strong>DPDP Act 2023</strong>. Only you and authorised payroll officers can access them.</span>
-        </div>
+        
       </div>
 
       <div class="section">
@@ -1344,7 +1449,6 @@
             <p>Salary bank account used for payroll disbursement.</p>
           </div>
           <div class="spacer"></div>
-          <span class="badge b-gray only-supervisor">Supervisor maintain</span>
         </div>
         <div class="form-grid">
           <label class="field"><span class="field-label">Bank name</span><input class="input" id="bBank" value="HDFC Bank" /></label>
@@ -1373,15 +1477,15 @@
             <p>Supervisor role can maintain this tab; employee can view only.</p>
           </div>
           <div class="spacer"></div>
-          <span class="badge b-gray only-supervisor">Supervisor maintain</span>
           <span class="badge b-indigo only-employee">View only</span>
-          <button class="btn btn-secondary btn-sm" onclick="pfOpen('salary')"><span class="icon" data-icon="edit"></span>Edit</button>
+          <button class="btn btn-secondary btn-sm only-supervisor" onclick="pfOpen('salary')"><span class="icon" data-icon="edit"></span>Edit</button>
         </div>
 
-        <div class="form-grid" style="margin-bottom:20px">
+        <div class="form-grid only-supervisor" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:20px">
           <label class="field"><span class="field-label">Month</span>
             <select class="select" id="salMonth">
               <option>January</option><option>February</option><option>March</option>
+              <option>April</option><option>May</option><option>June</option>
               <option selected>July</option><option>August</option><option>September</option>
               <option>October</option><option>November</option><option>December</option>
             </select>
@@ -1389,24 +1493,21 @@
           <label class="field"><span class="field-label">Year</span>
             <select class="select" id="salYear"><option selected>2026</option><option>2025</option><option>2024</option></select>
           </label>
-          <label class="field" id="ewaiField">
-            <span class="field-label">EWAI employee</span>
-            <div class="flag-group" style="display:flex;align-items:center;gap:9px;height:36px">
-              <label class="switch" title="Salary tab is active only if this field is active">
-                <input type="checkbox" id="ewaiToggle" checked />
-                <span class="track"></span>
-              </label>
-              <span class="ewai-status on" id="ewaiVal"><span class="dot"></span>Active</span>
-            </div>
+          <label class="field"><span class="field-label">Currency</span>
+            <select class="select" id="salCurrency" onchange="calcSalary()">
+              <option value="INR" selected>INR (₹)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="AED">AED (د.إ)</option>
+              <option value="SGD">SGD ($)</option>
+              <option value="CAD">CAD ($)</option>
+              <option value="AUD">AUD ($)</option>
+            </select>
           </label>
         </div>
 
-        <div id="salaryLocked" class="sal-locked" style="display:none;margin-bottom:16px">
-          <!-- <span class="icon" data-icon="lock"></span> -->
-          <span>Salary tab is inactive because the <strong>EWAI employee</strong> field is off. Turn it on to compute pay.</span>
-        </div>
-
-        <div id="salaryArea">
+        <div id="salaryArea" class="only-supervisor">
           <div class="sal-lines">
             <div class="sal-item">
               <div class="row"><span class="lbl">Base salary</span><span class="sign plus">+</span></div>
@@ -1440,11 +1541,103 @@
             </div>
             <div class="amount" id="salTotal">₹1,14,100</div>
           </div>
+        </div>
 
-          <div class="callout callout-purple" style="margin-top:16px">
-            <span class="icon" data-icon="info"></span>
-            <span>This tab is <strong>active only if the EWAI employee field is active</strong>.</span>
+        <div class="only-employee sal-compact" id="salaryViewArea">
+          <div class="sc-head">
+            <div class="sc-period"><span class="icon" data-icon="calendar"></span><span id="salViewPeriod">July 2026</span></div>
+            <div class="sc-net"><span>Net payable</span><b id="salViewTotal">₹1,14,100</b></div>
           </div>
+          <div class="sc-grid">
+            <div class="sc-row"><span>Base salary</span><b class="plus" id="salViewBase">+ ₹85,000</b></div>
+            <div class="sc-row"><span>HRA</span><b class="plus" id="salViewHra">+ ₹34,000</b></div>
+            <div class="sc-row"><span>Allowances</span><b class="plus" id="salViewAllw">+ ₹8,000</b></div>
+            <div class="sc-row"><span>Professional tax</span><b class="minus" id="salViewProf">− ₹200</b></div>
+            <div class="sc-row"><span id="salViewTdsPct">TDS · 10%</span><b class="minus" id="salViewTds">− ₹12,700</b></div>
+            <div class="sc-row sc-total"><span>Gross</span><b id="salViewGross">₹1,27,000</b></div>
+          </div>
+          <div class="sc-foot" id="salViewFormula">Gross ₹1,27,000 − professional tax ₹200 − TDS 10% ₹12,700</div>
+        </div>
+      </div>
+
+      <!-- ================= DISBURSEMENT & PAYMENT HISTORY ================= -->
+      <div class="section" style="margin-top:16px">
+        <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="history"></span></span>
+          <div>
+            <h2>Disbursement & Payment History</h2>
+            <p>Historical record of processed salary disbursements, tax deductions (TDS & Professional Tax), net payouts, and bank receipts.</p>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-secondary btn-sm" onclick="exportSalaryHistoryCSV()"><span class="icon" data-icon="download"></span>Export CSV</button>
+          <button class="btn btn-primary btn-sm only-supervisor" onclick="openAddPaymentModal()"><span class="icon" data-icon="plus"></span>Add Payment Record</button>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="sal-kpi-grid">
+          <div class="sal-kpi-card">
+            <div class="kpi-lbl"><span class="icon" data-icon="wallet"></span>YTD Gross Paid</div>
+            <div class="kpi-val" id="kpiYtdGross">₹0</div>
+            <div class="kpi-sub">Base + HRA + Allowances</div>
+          </div>
+          <div class="sal-kpi-card">
+            <div class="kpi-lbl"><span class="icon" data-icon="shield"></span>YTD Tax & Deductions</div>
+            <div class="kpi-val" id="kpiYtdTax">₹0</div>
+            <div class="kpi-sub" id="kpiYtdTaxSub">TDS + Professional Tax</div>
+          </div>
+          <div class="sal-kpi-card">
+            <div class="kpi-lbl"><span class="icon" data-icon="check"></span>YTD Net Disbursed</div>
+            <div class="kpi-val" id="kpiYtdNet" style="color:var(--green)">₹0</div>
+            <div class="kpi-sub">Direct Bank Payouts</div>
+          </div>
+          <div class="sal-kpi-card">
+            <div class="kpi-lbl"><span class="icon" data-icon="calendar"></span>Pay Cycles</div>
+            <div class="kpi-val" id="kpiPayCycles">0</div>
+            <div class="kpi-sub">Disbursed periods</div>
+          </div>
+        </div>
+
+        <!-- Toolbar: Filters -->
+        <div class="sal-hist-toolbar">
+          <div class="sal-hist-filters">
+            <div style="position:relative;flex:1;max-width:260px">
+              <span class="icon" data-icon="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-3);pointer-events:none"></span>
+              <input type="text" id="salHistSearch" class="input" placeholder="Search period, status, UTR..." style="padding-left:32px;height:36px;font-size:13px" oninput="filterPaymentHistory()" />
+            </div>
+            <select id="salHistYear" class="select" style="max-width:130px;height:36px;font-size:13px" onchange="filterPaymentHistory()">
+              <option value="all">All Years</option>
+              <option value="2026" selected>2026</option>
+              <option value="2025">2025</option>
+            </select>
+            <select id="salHistStatus" class="select" style="max-width:140px;height:36px;font-size:13px" onchange="filterPaymentHistory()">
+              <option value="all">All Statuses</option>
+              <option value="Paid">Paid</option>
+              <option value="Processing">Processing</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- History Table -->
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Pay Period</th>
+                <th>Disbursement Date</th>
+                <th>Gross Salary</th>
+                <th>Tax & Deductions</th>
+                <th>Net Payout</th>
+                <th>Bank / Account</th>
+                <th>Status</th>
+                <th>UTR / Ref Code</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="salHistoryBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -1469,16 +1662,12 @@
         <div class="table-wrap">
           <table class="table">
             <thead>
-              <tr><th>Document</th><th>Type / Year</th><th>Current document</th><th>Uploaded by</th><th>Actions</th></tr>
+              <tr><th>Document</th><th>Type</th><th>Current document</th><th>Uploaded by</th><th>Actions</th></tr>
             </thead>
             <tbody id="docBody">
               <tr data-doc="identity">
                 <td class="cell-strong">Identity</td>
-                <td>
-                  <select class="select" style="min-width:130px">
-                    <option selected>Aadhaar</option><option>PAN</option><option>Passport</option>
-                  </select>
-                </td>
+                <td><span class="badge b-indigo">Aadhaar</span></td>
                 <td id="latest-identity"><span class="cell-strong">aadhaar_v3.pdf</span> <span class="doc-empty" style="font-size:12px">· 14 Jan 2026</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1489,11 +1678,7 @@
               </tr>
               <tr data-doc="education">
                 <td class="cell-strong">Education certificates</td>
-                <td>
-                  <select class="select" style="min-width:130px">
-                    <option>Undergraduate</option><option selected>Post Graduate</option>
-                  </select>
-                </td>
+                <td><span class="badge b-indigo">Post Graduate</span></td>
                 <td id="latest-education"><span class="cell-strong">mba_degree.pdf</span> <span class="doc-empty" style="font-size:12px">· 02 Jul 2024</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1504,7 +1689,7 @@
               </tr>
               <tr data-doc="offer">
                 <td class="cell-strong">Offer / increment letter</td>
-                <td><span class="doc-empty">–</span></td>
+                <td><span class="badge b-indigo">Offer Letter</span></td>
                 <td id="latest-offer"><span class="cell-strong">increment_2026.pdf</span> <span class="doc-empty" style="font-size:12px">· 01 Apr 2026</span></td>
                 <td>HR · Mayank K.</td>
                 <td class="actions">
@@ -1515,11 +1700,7 @@
               </tr>
               <tr data-doc="form16">
                 <td class="cell-strong">Form 16</td>
-                <td>
-                  <select class="select" style="min-width:130px">
-                    <option>FY 2023-24</option><option>FY 2024-25</option><option selected>FY 2025-26</option>
-                  </select>
-                </td>
+                <td><span class="badge b-indigo">Form 16</span></td>
                 <td id="latest-form16"><span class="cell-strong">form16_fy2526.pdf</span> <span class="doc-empty" style="font-size:12px">· 20 May 2026</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1530,7 +1711,7 @@
               </tr>
               <tr data-doc="shares">
                 <td class="cell-strong">Employee shares</td>
-                <td><span class="doc-empty">–</span></td>
+                <td><span class="badge b-indigo">Employee Shares / ESOP</span></td>
                 <td id="latest-shares"><span class="cell-strong">esop_grant_2024.pdf</span> <span class="doc-empty" style="font-size:12px">· 12 Aug 2024</span></td>
                 <td>Yash Sharma</td>
                 <td class="actions">
@@ -1543,52 +1724,71 @@
           </table>
         </div>
 
-        <div class="sub-head" style="margin-top:24px">Pending uploads</div>
-        <div class="callout callout-warn" style="margin-bottom:16px">
-          <span class="icon" data-icon="alert"></span>
-          <span>The following documents have not been uploaded yet. Please upload them at your earliest convenience.</span>
-        </div>
+        <div class="sub-head" style="margin-top:24px">Upload new document </div>
         <div class="table-wrap">
           <table class="table">
             <thead>
-              <tr><th>Document</th><th>Type / Year</th><th>Status</th><th>Actions</th></tr>
+              <tr>
+                <th>Document *</th>
+                <th>Type</th>
+                <th>Current Uploaded document *</th>
+                <th>Uploaded by</th>
+                <th>Actions</th>
+              </tr>
             </thead>
-            <tbody id="pendingDocBody">
-              <tr data-doc="resignation">
-                <td class="cell-strong">Resignation letter</td>
-                <td><span class="doc-empty">–</span></td>
-                <td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>
-                <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('resignation')"><span class="icon" data-icon="upload"></span>Upload</button>
-                </td>
-              </tr>
-              <tr data-doc="acceptance">
-                <td class="cell-strong">Resignation acceptance letter</td>
-                <td><span class="doc-empty">–</span></td>
-                <td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>
-                <td class="actions">
-                  <button class="btn btn-secondary btn-sm" onclick="uploadDoc('acceptance')"><span class="icon" data-icon="upload"></span>Upload</button>
-                </td>
-              </tr>
-              <tr data-doc="relieving">
-                <td class="cell-strong">Relieving letter</td>
+            <tbody>
+              <tr>
                 <td>
-                  <span class="field-wrap only-supervisor" style="display:inline-block;vertical-align:middle">
-                    <input class="input" style="width:190px;font-size:12.5px" type="email" placeholder="person email…" value="yash.sharma@easework.in" />
-                  </span>
+                  <input type="text" class="input" id="inlineDocTitle" placeholder="e.g. Aadhaar Card 2026..." style="min-width:180px" />
                 </td>
-                <td><span class="badge b-amber"><span class="icon" data-icon="alert"></span>Not uploaded</span></td>
+                <td>
+                  <select class="select" id="newDocType" style="min-width:160px">
+                    <optgroup label="Identity Proofs">
+                      <option value="Aadhaar Card">Aadhaar Card</option>
+                      <option value="PAN Card">PAN Card</option>
+                      <option value="Passport">Passport</option>
+                      <option value="Voter ID Card">Voter ID Card</option>
+                      <option value="Driving License">Driving License</option>
+                    </optgroup>
+                    <optgroup label="Education & Credentials">
+                      <option value="Undergraduate Degree">Undergraduate Degree Certificate</option>
+                      <option value="Postgraduate Degree">Postgraduate Degree Certificate</option>
+                      <option value="High School Marksheet">10th / 12th High School Marksheet</option>
+                      <option value="Diploma Certificate">Diploma Certificate</option>
+                      <option value="Technical Certification">Technical & Skill Certification</option>
+                    </optgroup>
+                    <optgroup label="Employment & HR Letters">
+                      <option value="Offer Letter">Offer Letter</option>
+                      <option value="Appointment Letter">Appointment Letter</option>
+                      <option value="Increment Letter">Increment / Appraisal Letter</option>
+                      <option value="Form 16">Form 16 Tax Certificate</option>
+                      <option value="Employee Shares / ESOP">Employee Shares / ESOP Grant</option>
+                      <option value="Payslip Voucher">Historical Payslip Voucher</option>
+                      <option value="Resignation Letter">Resignation Letter</option>
+                      <option value="Resignation Acceptance">Resignation Acceptance Letter</option>
+                      <option value="Relieving & Experience">Relieving & Experience Letter</option>
+                    </optgroup>
+                    <optgroup label="Financial & Compliance">
+                      <option value="Bank Passbook / Cheque">Bank Passbook / Cancelled Cheque</option>
+                      <option value="Form 12BB / Tax Declaration">Form 12BB / Tax Declaration</option>
+                      <option value="NDA / Confidentiality">NDA & Confidentiality Agreement</option>
+                      <option value="Medical Certificate">Medical & Fitness Certificate</option>
+                    </optgroup>
+                  </select>
+                </td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <input type="file" id="inlineDocFileInput" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx" onchange="onInlineFileSelected(this)" style="font-size:12px;max-width:220px" />
+                    <span id="inlineFilePreviewName" style="font-size:12px;color:var(--text-3);display:none"></span>
+                  </div>
+                </td>
+                <td><span class="doc-empty">–</span></td>
                 <td class="actions">
-                  <button class="btn btn-secondary btn-sm only-supervisor" onclick="uploadDoc('relieving')"><span class="icon" data-icon="upload"></span>Upload</button>
-                  <button class="btn btn-ghost btn-sm only-employee" onclick="toast('Relieving letter upload is available to the supervisor role only')"><span class="icon" data-icon="lock"></span></button>
+                  <button class="btn btn-primary btn-sm" onclick="saveInlineDoc()"><span class="icon" data-icon="plus"></span>Add</button>
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-        <div class="inline-add" style="margin-top:16px">
-          <input class="input" id="customDocName" placeholder="Enter document name…" style="max-width:280px" />
-          <button class="btn btn-secondary btn-sm" onclick="addCustomDoc()"><span class="icon" data-icon="plus"></span>Add custom document</button>
         </div>
       </div>
     </section>
@@ -1747,6 +1947,216 @@
   </div>
 </div>
 
+<!-- ================= PAYSLIP VOUCHER MODAL ================= -->
+<div class="doc-overlay" id="payslipOverlay" onclick="if (event.target === this) closePayslipModal()">
+  <div class="doc-modal" style="width:720px" role="dialog" aria-modal="true" aria-labelledby="payslipModalTitle">
+    <div class="doc-modal-head">
+      <span class="head-icon"><span class="icon" data-icon="wallet"></span></span>
+      <div>
+        <div class="doc-modal-title" id="payslipModalTitle">Salary Payslip & Tax Receipt</div>
+        <div class="doc-modal-sub" id="payslipModalSub">EWAI Tech Solutions · Payroll Disbursement</div>
+      </div>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary btn-sm" onclick="printPayslip()"><span class="icon" data-icon="download"></span>Print / PDF</button>
+      <button class="btn btn-ghost btn-sm" onclick="closePayslipModal()" aria-label="Close"><span class="icon" data-icon="x"></span></button>
+    </div>
+    <div class="doc-modal-body" id="payslipModalBody" style="padding-top:16px">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ================= ADD / RECORD PAYMENT MODAL ================= -->
+<div class="doc-overlay" id="addPaymentOverlay" onclick="if (event.target === this) closeAddPaymentModal()">
+  <div class="doc-modal" style="width:560px" role="dialog" aria-modal="true" aria-labelledby="addPayTitle">
+    <div class="doc-modal-head">
+      <span class="head-icon"><span class="icon" data-icon="plus"></span></span>
+      <div>
+        <div class="doc-modal-title" id="addPayTitle">Record Payment History Entry</div>
+        <div class="doc-modal-sub">Log a salary disbursement and statutory tax record</div>
+      </div>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" onclick="closeAddPaymentModal()" aria-label="Close"><span class="icon" data-icon="x"></span></button>
+    </div>
+    <div class="doc-modal-body" style="padding-top:16px">
+      <form id="addPayForm" onsubmit="savePaymentRecord(event)">
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">Month <span class="req">*</span></span>
+            <select class="select" id="payMonth" required>
+              <option>January</option><option>February</option><option>March</option>
+              <option>April</option><option>May</option><option>June</option>
+              <option selected>July</option><option>August</option><option>September</option>
+              <option>October</option><option>November</option><option>December</option>
+            </select>
+          </label>
+          <label class="field"><span class="field-label">Year <span class="req">*</span></span>
+            <select class="select" id="payYear" required>
+              <option selected>2026</option><option>2025</option><option>2024</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">Disbursement Date <span class="req">*</span></span>
+            <input type="date" class="input" id="payDate" value="2026-07-31" required />
+          </label>
+          <label class="field"><span class="field-label">Status <span class="req">*</span></span>
+            <select class="select" id="payStatus" required>
+              <option value="Paid" selected>Paid</option>
+              <option value="Processing">Processing</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">Base Salary (₹)</span>
+            <input type="number" class="input" id="payBase" value="85000" min="0" oninput="calcAddPayModal()" />
+          </label>
+          <label class="field"><span class="field-label">HRA (₹)</span>
+            <input type="number" class="input" id="payHra" value="34000" min="0" oninput="calcAddPayModal()" />
+          </label>
+        </div>
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">Allowances (₹)</span>
+            <input type="number" class="input" id="payAllw" value="8000" min="0" oninput="calcAddPayModal()" />
+          </label>
+          <label class="field"><span class="field-label">Professional Tax (₹)</span>
+            <input type="number" class="input" id="payProf" value="200" min="0" oninput="calcAddPayModal()" />
+          </label>
+        </div>
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">TDS Rate (%)</span>
+            <input type="number" class="input" id="payTds" value="10" min="0" max="50" step="0.5" oninput="calcAddPayModal()" />
+          </label>
+          <label class="field"><span class="field-label">UTR / Reference No.</span>
+            <input type="text" class="input" id="payUtr" placeholder="PAY/2026/07/88921" />
+          </label>
+        </div>
+        <div class="callout callout-purple" style="margin-bottom:16px;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:12px;opacity:.85">Computed Net Payout</div>
+            <div style="font-size:20px;font-weight:800" id="addPayNetVal">₹1,14,100</div>
+          </div>
+          <div style="text-align:right;font-size:12px;opacity:.85" id="addPayGrossVal">Gross: ₹1,27,000 | Tax: ₹12,900</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px">
+          <button type="button" class="btn btn-secondary" onclick="closeAddPaymentModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><span class="icon" data-icon="check"></span>Save Payment Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= UPLOAD NEW DOCUMENT MODAL ================= -->
+<div class="doc-overlay" id="uploadNewDocOverlay" onclick="if (event.target === this) closeUploadNewDocModal()">
+  <div class="doc-modal" style="width:620px" role="dialog" aria-modal="true" aria-labelledby="uploadDocTitle">
+    <div class="doc-modal-head">
+      <span class="head-icon"><span class="icon" data-icon="upload"></span></span>
+      <div>
+        <div class="doc-modal-title" id="uploadDocTitle">Upload new documents <span style="color:var(--red)">(* is mandatory)</span></div>
+        <div class="doc-modal-sub">Add a document to the employee record. Fields marked <span style="color:var(--red)">*</span> are mandatory.</div>
+      </div>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" onclick="closeUploadNewDocModal()" aria-label="Close"><span class="icon" data-icon="x"></span></button>
+    </div>
+    <div class="doc-modal-body" style="padding-top:16px">
+      <form id="uploadDocForm" onsubmit="saveNewDocument(event)">
+        <!-- Category & Range of document options -->
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">Document Category & Type <span class="req">*</span></span>
+            <select class="select" id="newDocCategory" required onchange="onDocCategoryChange()">
+              <optgroup label="Identity Proofs">
+                <option value="Aadhaar Card">Aadhaar Card</option>
+                <option value="PAN Card">PAN Card</option>
+                <option value="Passport">Passport</option>
+                <option value="Voter ID Card">Voter ID Card</option>
+                <option value="Driving License">Driving License</option>
+              </optgroup>
+              <optgroup label="Education & Credentials">
+                <option value="Undergraduate Degree">Undergraduate Degree Certificate</option>
+                <option value="Postgraduate Degree">Postgraduate Degree Certificate</option>
+                <option value="High School Marksheet">10th / 12th High School Marksheet</option>
+                <option value="Diploma Certificate">Diploma Certificate</option>
+                <option value="Technical Certification">Technical & Skill Certification</option>
+              </optgroup>
+              <optgroup label="Employment & HR Letters">
+                <option value="Offer Letter">Offer Letter</option>
+                <option value="Appointment Letter">Appointment Letter</option>
+                <option value="Increment Letter">Increment / Appraisal Letter</option>
+                <option value="Form 16">Form 16 Tax Certificate</option>
+                <option value="Employee Shares / ESOP">Employee Shares / ESOP Grant</option>
+                <option value="Payslip Voucher">Historical Payslip Voucher</option>
+                <option value="Resignation Letter">Resignation Letter</option>
+                <option value="Resignation Acceptance">Resignation Acceptance Letter</option>
+                <option value="Relieving & Experience">Relieving & Experience Letter</option>
+              </optgroup>
+              <optgroup label="Financial & Compliance">
+                <option value="Bank Passbook / Cheque">Bank Passbook / Cancelled Cheque</option>
+                <option value="Form 12BB / Tax Declaration">Form 12BB / Tax Declaration</option>
+                <option value="NDA / Confidentiality">NDA & Confidentiality Agreement</option>
+                <option value="Medical Certificate">Medical & Fitness Certificate</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="Custom Document">Custom / Other Document</option>
+              </optgroup>
+            </select>
+          </label>
+          <label class="field"><span class="field-label">Document Title / Name <span class="req">*</span></span>
+            <input type="text" class="input" id="newDocTitle" placeholder="e.g. Aadhaar Card 2026..." required />
+          </label>
+        </div>
+
+        <div class="form-grid cols-2" style="margin-bottom:14px">
+          <label class="field"><span class="field-label">Document Year / Period <span class="req">*</span></span>
+            <select class="select" id="newDocYear" required>
+              <option selected>2026</option>
+              <option>2025</option>
+              <option>2024</option>
+              <option>2023</option>
+              <option>2022</option>
+              <option>FY 2025-26</option>
+              <option>FY 2024-25</option>
+            </select>
+          </label>
+          <label class="field"><span class="field-label">Access / Permissions</span>
+            <input type="text" class="input" id="newDocAccess" value="Employee & Supervisor" readonly style="background:var(--surface-2)" />
+          </label>
+        </div>
+
+        <!-- Mandatory File Upload Area for Images or Documents -->
+        <div class="field" style="margin-bottom:14px">
+          <span class="field-label">Images or documents (maximum 5 MB each) <span class="req">*</span></span>
+          <div class="file-dropzone" onclick="document.getElementById('newDocFileInput').click()">
+            <input type="file" id="newDocFileInput" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx" onchange="onFileSelected(this)" />
+            <div class="dz-icon"><span class="icon" data-icon="upload"></span></div>
+            <div class="dz-txt">Click to browse or drop images/documents here <span class="req">*</span></div>
+            <div class="dz-sub">Supports PDF, PNG, JPG, JPEG, DOCX · Maximum 5 MB each</div>
+          </div>
+          <div id="filePreviewBox" class="file-preview-box" style="display:none">
+            <span class="icon" data-icon="file" style="color:var(--purple);width:20px;height:20px"></span>
+            <div style="flex:1;min-width:0">
+              <div id="filePreviewName" style="font-weight:600;font-size:13px;color:var(--text)">selected_file.pdf</div>
+              <div id="filePreviewSize" style="font-size:11.5px;color:var(--text-3)">1.8 MB · Upload Ready</div>
+            </div>
+            <span class="badge b-green"><span class="icon" data-icon="check"></span>Ready</span>
+          </div>
+        </div>
+
+        <!-- Description Textarea -->
+        <div class="field" style="margin-bottom:18px">
+          <span class="field-label">Description</span>
+          <textarea class="textarea" id="newDocDescription" placeholder="Enter notes or description about this document (optional)..." style="min-height:64px"></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px">
+          <button type="button" class="btn btn-secondary" onclick="closeUploadNewDocModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><span class="icon" data-icon="check"></span>Upload Document</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
 <script>
@@ -1826,6 +2236,7 @@ document.querySelectorAll('.emp-item').forEach(function (item) {
     if (parts[0]) document.getElementById('metaEmpId').textContent = parts[0];
     if (parts[1]) document.getElementById('detailDept').childNodes[1].textContent = parts[1];
     if (parts[2]) document.getElementById('detailRole').textContent = parts[2];
+    renderPaymentHistory();
     toast('Opened ' + u.name + ' (demo)');
   });
 });
@@ -1892,13 +2303,12 @@ function setRole(role) {
     }
   }
   pEmpType.disabled = role !== 'supervisor';
-  ewaiToggle.disabled = role !== 'supervisor';
   ['#panel-employment', '#panel-kyc', '#panel-assets'].forEach(function (sel) {
     document.querySelectorAll(sel + ' input, ' + sel + ' select').forEach(function (el) {
       el.disabled = role === 'employee';
     });
   });
-  toggleSalaryLock();
+  renderSalaryView();
 }
 document.getElementById('roleEmployee').addEventListener('click', function () { setRole('employee'); toast('Switched to Employee view'); });
 document.getElementById('roleSupervisor').addEventListener('click', function () { setRole('supervisor'); toast('Switched to Supervisor view'); });
@@ -1944,48 +2354,546 @@ function renderYos() {
 }
 document.getElementById('joiningDate').addEventListener('change', renderYos);
 
-/* ---------------- salary ---------------- */
-function inr(n) {
-  return '₹' + Math.round(n).toLocaleString('en-IN');
+/* ---------------- employee active / inactive toggle ---------------- */
+var EMP_ACTIVE = true;
+function setEmpStatus(active, silent) {
+  EMP_ACTIVE = active;
+  var btn = document.getElementById('empStatusBtn');
+  var label = document.getElementById('empStatusLabel');
+  var pill = document.getElementById('empActivePill');
+  if (btn) btn.classList.toggle('is-inactive', !active);
+  if (label) label.textContent = active ? 'Active' : 'Inactive';
+  if (pill) {
+    pill.className = 'pill ' + (active ? 'pill-active' : 'pill-inactive');
+    pill.innerHTML = '<span class="icon">' + ICONS[active ? 'check' : 'x'] + '</span>' + (active ? 'Active' : 'Inactive');
+  }
+  if (!silent) toast('Employee marked as ' + (active ? 'Active' : 'Inactive'));
 }
+function toggleEmpActive() {
+  setEmpStatus(!EMP_ACTIVE);
+}
+setEmpStatus(true, true);
+
+
+/* ---------------- salary ---------------- */
+var CURRENCY_MAP = {
+  INR: { symbol: '₹', code: 'INR' },
+  USD: { symbol: '$', code: 'USD' },
+  EUR: { symbol: '€', code: 'EUR' },
+  GBP: { symbol: '£', code: 'GBP' },
+  AED: { symbol: 'د.إ', code: 'AED' },
+  SGD: { symbol: 'S$', code: 'SGD' },
+  CAD: { symbol: 'C$', code: 'CAD' },
+  AUD: { symbol: 'A$', code: 'AUD' }
+};
+
+function inr(n, curr) {
+  curr = curr || (document.getElementById('salCurrency') ? document.getElementById('salCurrency').value : 'INR');
+  var sym = (CURRENCY_MAP[curr] && CURRENCY_MAP[curr].symbol) ? CURRENCY_MAP[curr].symbol : '₹';
+  return sym + Math.round(n).toLocaleString('en-IN');
+}
+
 function calcSalary() {
   var base = +document.getElementById('salBase').value || 0;
   var hra = +document.getElementById('salHra').value || 0;
   var allw = +document.getElementById('salAllw').value || 0;
   var prof = +document.getElementById('salProfTax').value || 0;
   var tdsPct = +document.getElementById('salTds').value || 0;
+  var curr = document.getElementById('salCurrency') ? document.getElementById('salCurrency').value : 'INR';
+  var sym = (CURRENCY_MAP[curr] && CURRENCY_MAP[curr].symbol) ? CURRENCY_MAP[curr].symbol : '₹';
+
+  document.querySelectorAll('#salBase, #salHra, #salAllw, #salProfTax').forEach(function(el) {
+    var p = el.previousElementSibling;
+    if (p && p.classList.contains('prefix')) p.textContent = sym;
+  });
+
   var gross = base + hra + allw;
   var tds = gross * tdsPct / 100;
   var total = gross - prof - tds;
   var m = document.getElementById('salMonth').value;
   var y = document.getElementById('salYear').value;
-  document.getElementById('salTotal').textContent = inr(total);
-  document.getElementById('salFormula').textContent = 'Gross ' + inr(gross) + ' − professional tax ' + inr(prof) + ' − TDS ' + tdsPct + '% ' + inr(tds);
-  document.getElementById('salPeriodLabel').textContent = m + ' ' + y;
+  document.getElementById('salTotal').textContent = inr(total, curr);
+  document.getElementById('salFormula').textContent = 'Gross ' + inr(gross, curr) + ' − professional tax ' + inr(prof, curr) + ' − TDS ' + tdsPct + '% ' + inr(tds, curr);
+  document.getElementById('salPeriodLabel').textContent = m + ' ' + y + ' (' + curr + ')';
+  renderSalaryView();
 }
 document.getElementById('salMonth').addEventListener('change', calcSalary);
 document.getElementById('salYear').addEventListener('change', calcSalary);
 
-var ewaiToggle = document.getElementById('ewaiToggle');
-var ewaiVal = document.getElementById('ewaiVal');
-function toggleSalaryLock() {
-  var active = ewaiToggle.checked && document.body.getAttribute('data-role') === 'supervisor';
-  var lockedArea = document.getElementById('salaryLocked');
-  var area = document.getElementById('salaryArea');
-  lockedArea.style.display = active ? 'none' : 'block';
-  area.style.opacity = active ? '1' : '.45';
-  area.querySelectorAll('input, select').forEach(function (el) {
-    el.disabled = !active;
-  });
+/* ---------------- salary payment history ---------------- */
+var PAYMENT_HISTORY = {
+  'Yash Sharma': [
+    { id: 'pay-101', month: 'July', year: '2026', date: '2026-07-31', displayDate: '31 Jul 2026', currency: 'INR', base: 85000, hra: 34000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/07/88921', bank: 'Salary Account · HDFC Bank (··· 4920)' },
+    { id: 'pay-102', month: 'June', year: '2026', date: '2026-06-30', displayDate: '30 Jun 2026', currency: 'INR', base: 85000, hra: 34000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/06/77412', bank: 'Salary Account · HDFC Bank (··· 4920)' },
+    { id: 'pay-103', month: 'May', year: '2026', date: '2026-05-31', displayDate: '31 May 2026', currency: 'INR', base: 85000, hra: 34000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/05/66301', bank: 'Salary Account · HDFC Bank (··· 4920)' },
+    { id: 'pay-104', month: 'April', year: '2026', date: '2026-04-30', displayDate: '30 Apr 2026', currency: 'INR', base: 80000, hra: 32000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/04/55190', bank: 'Salary Account · HDFC Bank (··· 4920)' },
+    { id: 'pay-105', month: 'March', year: '2026', date: '2026-03-31', displayDate: '31 Mar 2026', currency: 'INR', base: 80000, hra: 32000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/03/44089', bank: 'Salary Account · HDFC Bank (··· 4920)' },
+    { id: 'pay-106', month: 'February', year: '2026', date: '2026-02-28', displayDate: '28 Feb 2026', currency: 'INR', base: 80000, hra: 32000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/02/33978', bank: 'Salary Account · HDFC Bank (··· 4920)' },
+    { id: 'pay-107', month: 'January', year: '2026', date: '2026-01-31', displayDate: '31 Jan 2026', currency: 'INR', base: 80000, hra: 32000, allw: 8000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/01/22867', bank: 'Salary Account · HDFC Bank (··· 4920)' }
+  ],
+  'Mayank K.': [
+    { id: 'pay-201', month: 'July', year: '2026', date: '2026-07-31', displayDate: '31 Jul 2026', currency: 'USD', base: 4500, hra: 1500, allw: 500, profTax: 50, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/07/99104', bank: 'Salary Account · Chase Bank (··· 8812)' },
+    { id: 'pay-202', month: 'June', year: '2026', date: '2026-06-30', displayDate: '30 Jun 2026', currency: 'USD', base: 4500, hra: 1500, allw: 500, profTax: 50, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/06/99003', bank: 'Salary Account · Chase Bank (··· 8812)' },
+    { id: 'pay-203', month: 'May', year: '2026', date: '2026-05-31', displayDate: '31 May 2026', currency: 'USD', base: 4500, hra: 1500, allw: 500, profTax: 50, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/05/98902', bank: 'Salary Account · Chase Bank (··· 8812)' }
+  ],
+  'Komal Solanki': [
+    { id: 'pay-301', month: 'July', year: '2026', date: '2026-07-31', displayDate: '31 Jul 2026', currency: 'INR', base: 95000, hra: 38000, allw: 9000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/07/77541', bank: 'Salary Account · Axis Bank (··· 1190)' },
+    { id: 'pay-302', month: 'June', year: '2026', date: '2026-06-30', displayDate: '30 Jun 2026', currency: 'INR', base: 95000, hra: 38000, allw: 9000, profTax: 200, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/06/77430', bank: 'Salary Account · Axis Bank (··· 1190)' }
+  ],
+  'Ratha N.': [
+    { id: 'pay-401', month: 'July', year: '2026', date: '2026-07-31', displayDate: '31 Jul 2026', currency: 'EUR', base: 3500, hra: 1200, allw: 300, profTax: 40, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/07/66329', bank: 'Salary Account · BNP Paribas (··· 3321)' },
+    { id: 'pay-402', month: 'June', year: '2026', date: '2026-06-30', displayDate: '30 Jun 2026', currency: 'EUR', base: 3500, hra: 1200, allw: 300, profTax: 40, tdsPct: 10, status: 'Paid', utr: 'PAY/2026/06/66218', bank: 'Salary Account · BNP Paribas (··· 3321)' }
+  ]
+};
+
+function getActiveEmpName() {
+  var el = document.getElementById('detailName');
+  return el ? el.textContent.trim() : 'Yash Sharma';
 }
-ewaiToggle.addEventListener('change', function () {
-  var active = ewaiToggle.checked;
-  ewaiVal.classList.toggle('on', active);
-  ewaiVal.classList.toggle('off', !active);
-  ewaiVal.innerHTML = '<span class="dot"></span>' + (active ? 'Active' : 'Inactive');
-  toggleSalaryLock();
-  toast(active ? 'EWAI flag enabled. Salary tab active' : 'EWAI flag disabled. Salary tab inactive');
-});
+
+function getEmpSalaryRecords() {
+  var name = getActiveEmpName();
+  if (!PAYMENT_HISTORY[name]) PAYMENT_HISTORY[name] = [];
+  return PAYMENT_HISTORY[name];
+}
+
+function calcSalaryRecMetrics(rec) {
+  var gross = rec.base + rec.hra + rec.allw;
+  var tds = gross * rec.tdsPct / 100;
+  var taxTotal = rec.profTax + tds;
+  var net = gross - taxTotal;
+  return { gross: gross, tds: tds, profTax: rec.profTax, taxTotal: taxTotal, net: net };
+}
+
+function renderPaymentHistory() {
+  var records = getEmpSalaryRecords();
+  var search = (document.getElementById('salHistSearch') ? document.getElementById('salHistSearch').value : '').toLowerCase().trim();
+  var year = document.getElementById('salHistYear') ? document.getElementById('salHistYear').value : 'all';
+  var status = document.getElementById('salHistStatus') ? document.getElementById('salHistStatus').value : 'all';
+
+  var filtered = records.filter(function (r) {
+    if (year !== 'all' && r.year !== year) return false;
+    if (status !== 'all' && r.status !== status) return false;
+    if (search) {
+      var txt = (r.month + ' ' + r.year + ' ' + r.status + ' ' + r.utr + ' ' + r.displayDate + ' ' + (r.currency||'')).toLowerCase();
+      if (txt.indexOf(search) === -1) return false;
+    }
+    return true;
+  });
+
+  var ytdGross = 0, ytdTax = 0, ytdNet = 0, cyclesCount = records.length;
+  var defaultCurr = records.length > 0 ? (records[0].currency || 'INR') : 'INR';
+
+  records.forEach(function (r) {
+    var m = calcSalaryRecMetrics(r);
+    ytdGross += m.gross;
+    ytdTax += m.taxTotal;
+    ytdNet += m.net;
+  });
+
+  if (document.getElementById('kpiYtdGross')) document.getElementById('kpiYtdGross').textContent = inr(ytdGross, defaultCurr);
+  if (document.getElementById('kpiYtdTax')) document.getElementById('kpiYtdTax').textContent = inr(ytdTax, defaultCurr);
+  if (document.getElementById('kpiYtdNet')) document.getElementById('kpiYtdNet').textContent = inr(ytdNet, defaultCurr);
+  if (document.getElementById('kpiPayCycles')) document.getElementById('kpiPayCycles').textContent = cyclesCount + ' cycles';
+
+  var tbody = document.getElementById('salHistoryBody');
+  if (!tbody) return;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-3);font-style:italic">No payment history records found matching criteria.</td></tr>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function (r) {
+    var m = calcSalaryRecMetrics(r);
+    var c = r.currency || 'INR';
+    var badgeCls = r.status === 'Paid' ? 'b-green' : (r.status === 'Processing' ? 'b-amber' : 'b-blue');
+    var badgeIcon = r.status === 'Paid' ? 'check' : (r.status === 'Processing' ? 'clock' : 'info');
+
+    html += '<tr>' +
+      '<td><span class="cell-strong">' + escapeHtml(r.month + ' ' + r.year) + '</span> <span class="badge b-gray" style="font-size:10.5px">' + escapeHtml(c) + '</span></td>' +
+      '<td>' + escapeHtml(r.displayDate) + '</td>' +
+      '<td class="num">' + inr(m.gross, c) + '</td>' +
+      '<td class="num"><span style="color:var(--red)">−' + inr(m.taxTotal, c) + '</span><br/><span style="font-size:11px;color:var(--text-3)">TDS: ' + inr(m.tds, c) + ' | PT: ' + inr(m.profTax, c) + '</span></td>' +
+      '<td class="num cell-strong" style="color:var(--green)">' + inr(m.net, c) + '</td>' +
+      '<td style="font-size:12px">' + escapeHtml(r.bank || 'Direct Bank Payout') + '</td>' +
+      '<td><span class="badge ' + badgeCls + '"><span class="icon" data-icon="' + badgeIcon + '"></span>' + escapeHtml(r.status) + '</span></td>' +
+      '<td style="font-family:monospace;font-size:12px">' + escapeHtml(r.utr) + '</td>' +
+      '<td class="actions">' +
+        '<button class="btn btn-secondary btn-sm" onclick="openPayslipModal(\'' + r.id + '\')" title="View Payslip"><span class="icon" data-icon="eye"></span>Payslip</button> ' +
+        '<button class="btn btn-ghost btn-sm" onclick="downloadPayslip(\'' + r.id + '\')" title="Download Receipt"><span class="icon" data-icon="download"></span></button> ' +
+        '<button class="btn btn-danger btn-sm only-supervisor" onclick="deletePaymentRecord(\'' + r.id + '\')" title="Delete Record"><span class="icon" data-icon="trash"></span></button>' +
+      '</td>' +
+    '</tr>';
+  });
+
+  tbody.innerHTML = html;
+  refreshIcons();
+}
+
+function filterPaymentHistory() {
+  renderPaymentHistory();
+}
+
+function recordCurrentPay() {
+  if (document.body.getAttribute('data-role') !== 'supervisor') { toast('Only the supervisor can record pay'); return; }
+  var name = getActiveEmpName();
+  var m = document.getElementById('salMonth').value;
+  var y = document.getElementById('salYear').value;
+  var curr = document.getElementById('salCurrency') ? document.getElementById('salCurrency').value : 'INR';
+  var base = +document.getElementById('salBase').value || 0;
+  var hra = +document.getElementById('salHra').value || 0;
+  var allw = +document.getElementById('salAllw').value || 0;
+  var prof = +document.getElementById('salProfTax').value || 0;
+  var tdsPct = +document.getElementById('salTds').value || 0;
+
+  var gross = base + hra + allw;
+  var tds = gross * tdsPct / 100;
+  var net = gross - prof - tds;
+
+  var records = getEmpSalaryRecords();
+  var existingIdx = -1;
+  records.forEach(function (r, idx) {
+    if (r.month === m && r.year === y) existingIdx = idx;
+  });
+
+  var randRef = 'PAY/' + y + '/' + (['January','February','March','April','May','June','July','August','September','October','November','December'].indexOf(m)+1).toString().padStart(2,'0') + '/' + Math.floor(10000 + Math.random() * 90000);
+
+  var newRec = {
+    id: 'pay-' + Date.now(),
+    month: m,
+    year: y,
+    date: y + '-08-01',
+    displayDate: '01 ' + m.slice(0,3) + ' ' + y,
+    currency: curr,
+    base: base,
+    hra: hra,
+    allw: allw,
+    profTax: prof,
+    tdsPct: tdsPct,
+    status: 'Paid',
+    utr: randRef,
+    bank: 'Salary Account · HDFC Bank (··· 4920)'
+  };
+
+  if (existingIdx > -1) {
+    records[existingIdx] = newRec;
+    toast('Updated payment record of ' + inr(net, curr) + ' for ' + m + ' ' + y);
+  } else {
+    records.unshift(newRec);
+    toast('Disbursed & recorded payment of ' + inr(net, curr) + ' for ' + m + ' ' + y);
+  }
+
+  renderPaymentHistory();
+}
+
+function openPayslipModal(id) {
+  var records = getEmpSalaryRecords();
+  var rec = records.find(function (r) { return r.id === id; });
+  if (!rec) return;
+
+  var c = rec.currency || 'INR';
+  var m = calcSalaryRecMetrics(rec);
+  var empName = getActiveEmpName();
+  var empId = document.getElementById('metaEmpId') ? document.getElementById('metaEmpId').textContent : 'EMP-0142';
+  var dept = document.getElementById('detailDept') ? document.getElementById('detailDept').textContent.trim() : 'Engineering';
+  var role = document.getElementById('detailRole') ? document.getElementById('detailRole').textContent.trim() : 'Fullstack Engineer';
+
+  var html = '<div class="payslip-voucher">' +
+    '<div class="payslip-header">' +
+      '<div>' +
+        '<div class="payslip-brand">EWAI TECH SOLUTIONS PVT. LTD.</div>' +
+        '<div class="payslip-subbrand">Plot 42, Tech Park Sector 5, Bengaluru, KA 560100</div>' +
+        '<div style="font-weight:700;font-size:14px;color:var(--text);margin-top:8px">SALARY PAYSLIP & STATUTORY TAX STATEMENT</div>' +
+      '</div>' +
+      '<div class="payslip-badge-status">' +
+        '<span class="badge b-green" style="font-size:13px;padding:6px 12px"><span class="icon" data-icon="check"></span>' + escapeHtml(rec.status) + '</span>' +
+        '<div style="font-size:12px;color:var(--text-3);margin-top:6px">Period: <strong>' + escapeHtml(rec.month + ' ' + rec.year) + '</strong> (' + escapeHtml(c) + ')</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="payslip-meta-grid">' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Employee Name:</span><span class="m-val">' + escapeHtml(empName) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Employee ID:</span><span class="m-val">' + escapeHtml(empId) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Designation / Role:</span><span class="m-val">' + escapeHtml(role) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Department:</span><span class="m-val">' + escapeHtml(dept) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Disbursement Currency:</span><span class="m-val">' + escapeHtml(c) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Disbursement Date:</span><span class="m-val">' + escapeHtml(rec.displayDate) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Payment Ref / UTR:</span><span class="m-val" style="font-family:monospace">' + escapeHtml(rec.utr) + '</span></div>' +
+      '<div class="payslip-meta-item"><span class="m-lbl">Disbursement Bank:</span><span class="m-val">' + escapeHtml(rec.bank) + '</span></div>' +
+    '</div>' +
+
+    '<div class="payslip-table-grid">' +
+      '<div class="payslip-box">' +
+        '<div class="payslip-box-title"><span>Earnings</span><span>Amount (' + escapeHtml(c) + ')</span></div>' +
+        '<div class="payslip-row"><span>Basic Salary</span><span>' + inr(rec.base, c) + '</span></div>' +
+        '<div class="payslip-row"><span>House Rent Allowance (HRA)</span><span>' + inr(rec.hra, c) + '</span></div>' +
+        '<div class="payslip-row"><span>Special Allowances</span><span>' + inr(rec.allw, c) + '</span></div>' +
+        '<div class="payslip-row total-row"><span>Total Gross Earnings</span><span>' + inr(m.gross, c) + '</span></div>' +
+      '</div>' +
+      '<div class="payslip-box">' +
+        '<div class="payslip-box-title"><span>Deductions & Taxes</span><span>Amount (' + escapeHtml(c) + ')</span></div>' +
+        '<div class="payslip-row"><span>Professional Tax (PT)</span><span>' + inr(rec.profTax, c) + '</span></div>' +
+        '<div class="payslip-row"><span>TDS / Income Tax (' + rec.tdsPct + '%)</span><span>' + inr(m.tds, c) + '</span></div>' +
+        '<div class="payslip-row"><span style="color:var(--text-3);font-style:italic">Other Deductions</span><span>' + inr(0, c) + '</span></div>' +
+        '<div class="payslip-row total-row"><span style="color:var(--red)">Total Tax Deductions</span><span style="color:var(--red)">' + inr(m.taxTotal, c) + '</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="payslip-payout-banner">' +
+      '<div>' +
+        '<div class="p-lbl"><span class="icon" data-icon="check"></span>NET SALARY DISBURSED TO BANK</div>' +
+        '<div class="p-words">Statutory tax deducted as per Income Tax Act 1961</div>' +
+      '</div>' +
+      '<div class="p-amt">' + inr(m.net, c) + '</div>' +
+    '</div>' +
+
+    '<div style="font-size:11.5px;color:var(--text-3);text-align:center;margin-top:12px">' +
+      'This is a computer-generated salary slip and statutory tax summary statement. No signature required.' +
+    '</div>' +
+  '</div>';
+
+  document.getElementById('payslipModalBody').innerHTML = html;
+  document.getElementById('payslipOverlay').classList.add('open');
+  refreshIcons();
+}
+
+function closePayslipModal() {
+  document.getElementById('payslipOverlay').classList.remove('open');
+}
+
+function printPayslip() {
+  toast('Opening print preview for payslip...');
+  window.print();
+}
+
+function downloadPayslip(id) {
+  var records = getEmpSalaryRecords();
+  var rec = records.find(function (r) { return r.id === id; });
+  var name = getActiveEmpName();
+  var filename = 'Payslip_' + (rec ? rec.month + '_' + rec.year : 'Download') + '_' + name.replace(/\s+/g, '_') + '.pdf';
+  toast('Downloading ' + filename);
+}
+
+function openAddPaymentModal() {
+  if (document.body.getAttribute('data-role') !== 'supervisor') { toast('Only the supervisor can add payment records'); return; }
+  calcAddPayModal();
+  document.getElementById('addPaymentOverlay').classList.add('open');
+}
+
+function closeAddPaymentModal() {
+  document.getElementById('addPaymentOverlay').classList.remove('open');
+}
+
+function calcAddPayModal() {
+  var curr = document.getElementById('payCurrency') ? document.getElementById('payCurrency').value : 'INR';
+  var base = +document.getElementById('payBase').value || 0;
+  var hra = +document.getElementById('payHra').value || 0;
+  var allw = +document.getElementById('payAllw').value || 0;
+  var prof = +document.getElementById('payProf').value || 0;
+  var tdsPct = +document.getElementById('payTds').value || 0;
+
+  var gross = base + hra + allw;
+  var tds = gross * tdsPct / 100;
+  var taxTotal = prof + tds;
+  var net = gross - taxTotal;
+
+  document.getElementById('addPayNetVal').textContent = inr(net, curr);
+  document.getElementById('addPayGrossVal').textContent = 'Gross: ' + inr(gross, curr) + ' | Tax: ' + inr(taxTotal, curr);
+}
+
+function savePaymentRecord(e) {
+  e.preventDefault();
+  var m = document.getElementById('payMonth').value;
+  var y = document.getElementById('payYear').value;
+  var d = document.getElementById('payDate').value;
+  var curr = document.getElementById('payCurrency') ? document.getElementById('payCurrency').value : 'INR';
+  var status = document.getElementById('payStatus').value;
+  var base = +document.getElementById('payBase').value || 0;
+  var hra = +document.getElementById('payHra').value || 0;
+  var allw = +document.getElementById('payAllw').value || 0;
+  var prof = +document.getElementById('payProf').value || 0;
+  var tdsPct = +document.getElementById('payTds').value || 0;
+  var utr = (document.getElementById('payUtr').value || '').trim() || ('PAY/' + y + '/' + Math.floor(10000 + Math.random() * 90000));
+
+  var displayDate = d ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '31 Jul ' + y;
+
+  var records = getEmpSalaryRecords();
+  records.unshift({
+    id: 'pay-' + Date.now(),
+    month: m,
+    year: y,
+    date: d,
+    displayDate: displayDate,
+    currency: curr,
+    base: base,
+    hra: hra,
+    allw: allw,
+    profTax: prof,
+    tdsPct: tdsPct,
+    status: status,
+    utr: utr,
+    bank: 'Salary Account · HDFC Bank (··· 4920)'
+  });
+
+  closeAddPaymentModal();
+  renderPaymentHistory();
+  toast('Payment record added for ' + m + ' ' + y + ' (' + curr + ')');
+}
+
+function deletePaymentRecord(id) {
+  var records = getEmpSalaryRecords();
+  var idx = records.findIndex(function (r) { return r.id === id; });
+  if (idx > -1) {
+    var removed = records.splice(idx, 1)[0];
+    renderPaymentHistory();
+    toast('Deleted payment record for ' + removed.month + ' ' + removed.year);
+  }
+}
+
+function exportSalaryHistoryCSV() {
+  var records = getEmpSalaryRecords();
+  var name = getActiveEmpName();
+
+  var csv = 'Pay Period,Disbursement Date,Currency,Base Salary,HRA,Allowances,Gross Salary,Prof Tax,TDS %,TDS Amount,Net Payout,Status,UTR Reference\n';
+  records.forEach(function (r) {
+    var m = calcSalaryRecMetrics(r);
+    var c = r.currency || 'INR';
+    csv += '"' + r.month + ' ' + r.year + '","' + r.displayDate + '","' + c + '",' + r.base + ',' + r.hra + ',' + r.allw + ',' + m.gross + ',' + r.profTax + ',' + r.tdsPct + ',' + m.tds + ',' + m.net + ',"' + r.status + '","' + r.utr + '"\n';
+  });
+
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Salary_Payment_History_' + name.replace(/\s+/g, '_') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('Exported payment history CSV for ' + name);
+}
+
+/* ---------------- manual document uploads ---------------- */
+var SELECTED_DOC_FILE = null;
+
+function openUploadNewDocModal(prefillCategory) {
+  if (prefillCategory) {
+    var sel = document.getElementById('newDocCategory');
+    if (sel) {
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value.toLowerCase().indexOf(prefillCategory.toLowerCase()) > -1) {
+          sel.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
+  onDocCategoryChange();
+  SELECTED_DOC_FILE = null;
+  var fileInput = document.getElementById('newDocFileInput');
+  if (fileInput) fileInput.value = '';
+  var prev = document.getElementById('filePreviewBox');
+  if (prev) prev.style.display = 'none';
+  document.getElementById('uploadNewDocOverlay').classList.add('open');
+  refreshIcons();
+}
+
+function closeUploadNewDocModal() {
+  document.getElementById('uploadNewDocOverlay').classList.remove('open');
+}
+
+function onDocCategoryChange() {
+  var cat = document.getElementById('newDocCategory').value;
+  var titleInput = document.getElementById('newDocTitle');
+  if (titleInput && (!titleInput.value || titleInput.getAttribute('data-autofill') === '1')) {
+    var yr = document.getElementById('newDocYear') ? document.getElementById('newDocYear').value : '2026';
+    titleInput.value = cat + ' (' + yr + ')';
+    titleInput.setAttribute('data-autofill', '1');
+  }
+}
+
+function onFileSelected(input) {
+  if (input.files && input.files[0]) {
+    var file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      toast('File too large: maximum 5 MB per file');
+      input.value = '';
+      return;
+    }
+    SELECTED_DOC_FILE = file;
+    document.getElementById('filePreviewName').textContent = file.name;
+    var sz = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+    document.getElementById('filePreviewSize').textContent = sz + ' · File Ready (* Mandatory)';
+    document.getElementById('filePreviewBox').style.display = 'flex';
+  }
+}
+
+
+function saveNewDocument(e) {
+  e.preventDefault();
+  var cat = document.getElementById('newDocCategory').value;
+  var title = (document.getElementById('newDocTitle').value || '').trim();
+  var yr = document.getElementById('newDocYear').value;
+  var desc = (document.getElementById('newDocDescription').value || '').trim();
+
+  if (!title) { toast('Please enter document title (* mandatory)'); return; }
+
+  var filename = (SELECTED_DOC_FILE && SELECTED_DOC_FILE.name) ? SELECTED_DOC_FILE.name : (title.toLowerCase().replace(/[^a-z0-9]/g, '_') + '.pdf');
+
+  var empName = getActiveEmpName();
+  var isSupervisor = document.body.getAttribute('data-role') === 'supervisor';
+  var uploadedBy = isSupervisor ? ('Supervisor · ' + empName) : empName;
+
+  var docBody = document.getElementById('docBody');
+  if (docBody) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td class="cell-strong">' + escapeHtml(title) + '</td>' +
+      '<td><span class="badge b-indigo">' + escapeHtml(cat) + '</span> <span style="font-size:12px;color:var(--text-3)">' + escapeHtml(yr) + '</span></td>' +
+      '<td><span class="cell-strong">' + escapeHtml(filename) + '</span>' + (desc ? ('<br/><span style="font-size:11.5px;color:var(--text-3)" title="' + escapeHtml(desc) + '">' + escapeHtml(desc.slice(0,40)) + (desc.length>40?'…':'') + '</span>') : '') + '</td>' +
+      '<td>' + escapeHtml(uploadedBy) + '</td>' +
+      '<td class="actions">' +
+        '<button class="btn btn-secondary btn-sm" onclick="openUploadNewDocModal(\'' + escapeHtml(cat) + '\')"><span class="icon" data-icon="upload"></span>Re-upload</button> ' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'Viewing ' + escapeHtml(filename) + '\')"><span class="icon" data-icon="eye"></span>Show</button> ' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'Downloading ' + escapeHtml(filename) + '…\')"><span class="icon" data-icon="download"></span></button>' +
+      '</td>';
+    docBody.insertBefore(tr, docBody.firstChild);
+  }
+
+  closeUploadNewDocModal();
+  refreshIcons();
+  toast('Uploaded document "' + title + '" successfully (* mandatory verified)');
+}
+
+function uploadDoc(type) {
+  openUploadNewDocModal(type);
+}
+
+/* ---------------- salary employee view ---------------- */
+function renderSalaryView() {
+  var base = +document.getElementById('salBase').value || 0;
+  var hra = +document.getElementById('salHra').value || 0;
+  var allw = +document.getElementById('salAllw').value || 0;
+  var prof = +document.getElementById('salProfTax').value || 0;
+  var tdsPct = +document.getElementById('salTds').value || 0;
+  var curr = document.getElementById('salCurrency') ? document.getElementById('salCurrency').value : 'INR';
+  var gross = base + hra + allw;
+  var tds = gross * tdsPct / 100;
+  var net = gross - prof - tds;
+  var m = document.getElementById('salMonth').value;
+  var y = document.getElementById('salYear').value;
+  var set = function (id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; };
+  set('salViewPeriod', m + ' ' + y + ' (' + curr + ')');
+  set('salViewTotal', inr(net, curr));
+  set('salViewBase', '+ ' + inr(base, curr));
+  set('salViewHra', '+ ' + inr(hra, curr));
+  set('salViewAllw', '+ ' + inr(allw, curr));
+  set('salViewProf', '− ' + inr(prof, curr));
+  set('salViewTdsPct', 'TDS · ' + tdsPct + '%');
+  set('salViewTds', '− ' + inr(tds, curr));
+  set('salViewGross', inr(gross, curr));
+  set('salViewFormula', 'Gross ' + inr(gross, curr) + ' − professional tax ' + inr(prof, curr) + ' − TDS ' + tdsPct + '% ' + inr(tds, curr));
+}
 
 /* ---------------- add rows ---------------- */
 function addRow(tbodyId, cells) {
@@ -2238,7 +3146,9 @@ function pfGo(tab) {
 }
 function buildPfNav() {
   var html = '';
+  var isEmployee = document.body.getAttribute('data-role') === 'employee';
   PF_ORDER.forEach(function (k) {
+    if (isEmployee && k === 'salary') return;
     var t = PF_TABS[k];
     html += '<button class="pf-nav-btn' + (k === PF_ACTIVE ? ' active' : '') + '" onclick="pfGo(\'' + k + '\')"><span class="icon" data-icon="' + t.icon + '"></span>' + t.label + '</button>';
   });
@@ -2250,6 +3160,8 @@ function setPfHead() {
   document.getElementById('pfSub').textContent = PF_ADD_MODE ? 'Fill in the employee details to create a new record.' : t.sub;
 }
 function buildPfContent() {
+  var role = document.body.getAttribute('data-role');
+  if (role === 'employee' && PF_ACTIVE === 'salary') PF_ACTIVE = 'personal';
   setPfHead();
   var fn = PF_BUILD[PF_ACTIVE];
   document.getElementById('pfForm').innerHTML = fn ? fn() : '';
@@ -2265,15 +3177,6 @@ function pfApplyRoleGating() {
     document.querySelectorAll('#pfForm input, #pfForm select, #pfForm textarea').forEach(function (el) {
       el.disabled = true;
     });
-  }
-  if (PF_ACTIVE === 'salary') {
-    document.getElementById('pf_ewaiToggle').disabled = true;
-    var area = document.getElementById('pfSalaryArea');
-    if (area) {
-      area.querySelectorAll('input, select').forEach(function (el) { el.disabled = true; });
-      area.style.opacity = '.45';
-      area.style.pointerEvents = 'none';
-    }
   }
 }
 function pfSave() {
@@ -2486,22 +3389,13 @@ function pfSalItem(label, sign, prefix, srcId, cls, extraAttrs) {
     '<input class="input" id="pf_' + srcId + '" data-pf-src="' + srcId + '" type="number" value="' + escAttr(v) + '" ' + extraAttrs + ' oninput="pfCalcSalary()" /></div></div>';
 }
 function pfBuildSalary() {
-  var ewaiOn = document.getElementById('ewaiToggle').checked;
   var h = '';
   h += '<div class="pf-grid">';
   h += pfField('Month', pfSelectControl('salMonth'));
   h += pfField('Year', pfSelectControl('salYear'));
   h += '</div>';
 
-  h += '<div class="pf-field pf-field-full"><label class="pf-label">EWAI employee</label>' +
-    '<div style="display:flex;align-items:center;gap:9px;height:44px">' +
-    '<label class="switch"><input type="checkbox" id="pf_ewaiToggle" data-pf-src="ewaiToggle" ' + (ewaiOn ? 'checked' : '') + ' onchange="pfToggleSalary()" /><span class="track"></span></label>' +
-    '<span id="pf_ewaiVal" class="ewai-status ' + (ewaiOn ? 'on' : 'off') + '"><span class="dot"></span>' + (ewaiOn ? 'Active' : 'Inactive') + '</span></div></div>';
-
-  h += '<div id="pfSalaryLocked" class="sal-locked" style="' + (ewaiOn ? 'display:none' : '') + ';margin-top:6px">' +
-    '<span class="icon" data-icon="lock"></span><span>Salary tab is inactive because the <strong>EWAI employee</strong> field is off. Turn it on to compute pay.</span></div>';
-
-  h += '<div id="pfSalaryArea" style="' + (ewaiOn ? '' : 'opacity:.45;pointer-events:none') + '">';
+  h += '<div id="pfSalaryArea">';
   h += '<div class="sal-lines" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px">';
   h += pfSalItem('Base salary', '+', '₹', 'salBase', 'plus', 'min="0"');
   h += pfSalItem('HRA', '+', '₹', 'salHra', 'plus', 'min="0"');
@@ -2515,15 +3409,6 @@ function pfBuildSalary() {
     '<div class="amount" id="pfSalTotal"></div></div>';
   h += '</div>';
   return h;
-}
-function pfToggleSalary() {
-  var on = document.getElementById('pf_ewaiToggle').checked;
-  document.getElementById('pf_ewaiVal').textContent = on ? 'Active' : 'Inactive';
-  document.getElementById('pf_ewaiVal').style.color = on ? 'var(--green)' : 'var(--amber)';
-  document.getElementById('pfSalaryLocked').style.display = on ? 'none' : 'block';
-  document.getElementById('pfSalaryArea').style.opacity = on ? '1' : '.45';
-  document.getElementById('pfSalaryArea').style.pointerEvents = on ? '' : 'none';
-  pfCalcSalary();
 }
 function pfCalcSalary() {
   var g = function (id) { var el = document.getElementById('pf_' + id); return el ? (+el.value || 0) : 0; };
@@ -2539,7 +3424,7 @@ function pfCalcSalary() {
 function pfSaveSalary() {
   pfApply();
   calcSalary();
-  toggleSalaryLock();
+  renderSalaryView();
 }
 
 /* ---- Documents ---- */
@@ -2549,13 +3434,13 @@ function pfBuildDocuments() {
     '<span>Upload a new file to update the current document. Employees edit their own; supervisors can manage any document.</span></div>';
   h += '<div class="pf-subhead">Uploaded documents</div>';
   h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
-    '<thead><tr><th>Document</th><th>Type / Year</th><th>Current document</th><th>Uploaded by</th><th>Actions</th></tr></thead>' +
+    '<thead><tr><th>Document</th><th>Type</th><th>Current document</th><th>Uploaded by</th><th>Actions</th></tr></thead>' +
     '<tbody id="pfDocBody">' + (PF_ADD_MODE ? '<tr><td colspan="5"><span class="doc-empty">No documents yet. Upload after the employee record is created.</span></td></tr>' : document.getElementById('docBody').innerHTML) + '</tbody></table></div>';
   h += '<div class="pf-subhead" style="margin-top:20px">Pending uploads</div>';
   h += '<div class="callout callout-warn" style="margin-bottom:12px"><span class="icon" data-icon="alert"></span>' +
     '<span>The following documents have not been uploaded yet.</span></div>';
   h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
-    '<thead><tr><th>Document</th><th>Type / Year</th><th>Status</th><th>Actions</th></tr></thead>' +
+    '<thead><tr><th>Document</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>' +
     '<tbody id="pfPendingDocBody">' + (PF_ADD_MODE ? '' : document.getElementById('pendingDocBody').innerHTML) + '</tbody></table></div>';
   h += '<div class="inline-add" style="margin-top:12px"><input class="input" id="pfCustomDocName" placeholder="Enter document name…" style="max-width:280px" />';
   h += '<button class="btn btn-secondary btn-sm" onclick="pfAddCustomDoc()"><span class="icon" data-icon="plus"></span>Add custom document</button></div>';
@@ -2590,6 +3475,68 @@ function addCustomDoc() {
   ].join(''));
   document.getElementById('customDocName').value = '';
   toast('Custom document added');
+}
+
+/* ---- Inline Document Upload ---- */
+var INLINE_SELECTED_FILE = null;
+
+function onInlineFileSelected(input) {
+  if (input.files && input.files[0]) {
+    var file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      toast('File too large: maximum 5 MB per file');
+      input.value = '';
+      return;
+    }
+    INLINE_SELECTED_FILE = file;
+    var previewEl = document.getElementById('inlineFilePreviewName');
+    if (previewEl) {
+      previewEl.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)';
+      previewEl.style.display = 'inline';
+    }
+  }
+}
+
+function saveInlineDoc() {
+  var titleInput = document.getElementById('inlineDocTitle');
+  var typeSel = document.getElementById('newDocType');
+  var docName = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : '';
+  var docType = typeSel ? typeSel.value : '';
+
+  if (!docName) { toast('Please enter a document name'); return; }
+  if (!INLINE_SELECTED_FILE) { toast('Please select a file to upload'); return; }
+
+  var filename = INLINE_SELECTED_FILE.name;
+
+  var empName = getActiveEmpName();
+  var isSupervisor = document.body.getAttribute('data-role') === 'supervisor';
+  var uploadedBy = isSupervisor ? ('Supervisor · ' + empName) : empName;
+
+  var docBody = document.getElementById('docBody');
+  if (docBody) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td class="cell-strong">' + escapeHtml(docName) + '</td>' +
+      '<td><span class="badge b-indigo">' + escapeHtml(docType) + '</span></td>' +
+      '<td><span class="cell-strong">' + escapeHtml(filename) + '</span>' + (INLINE_SELECTED_FILE ? ('<br/><span style="font-size:11.5px;color:var(--text-3)">' + (INLINE_SELECTED_FILE.size / (1024 * 1024)).toFixed(2) + ' MB</span>') : '') + '</td>' +
+      '<td>' + escapeHtml(uploadedBy) + '</td>' +
+      '<td class="actions">' +
+        '<button class="btn btn-secondary btn-sm" onclick="toast(\'Re-upload ' + escapeHtml(filename) + '\')"><span class="icon" data-icon="upload"></span>Re-upload</button> ' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'Viewing ' + escapeHtml(filename) + '\')"><span class="icon" data-icon="eye"></span>Show</button> ' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'Downloading ' + escapeHtml(filename) + '…\')"><span class="icon" data-icon="download"></span></button>' +
+      '</td>';
+    docBody.insertBefore(tr, docBody.firstChild);
+  }
+
+  // Reset form
+  if (titleInput) titleInput.value = '';
+  INLINE_SELECTED_FILE = null;
+  var fileInput = document.getElementById('inlineDocFileInput');
+  if (fileInput) fileInput.value = '';
+  var previewEl = document.getElementById('inlineFilePreviewName');
+  if (previewEl) { previewEl.textContent = ''; previewEl.style.display = 'none'; }
+
+  refreshIcons();
+  toast('Document "' + docName + '" uploaded successfully');
 }
 
 /* ---- Assets ---- */
@@ -2811,12 +3758,15 @@ var PF_SAVE = {
   feedback: pfSaveFeedback
 };
 
-/* esc closes the profile modal (or the doc viewer) */
+/* esc closes the profile modal (or the doc viewer or payslip/add payment/upload doc modals) */
 document.addEventListener('keydown', function (e) {
   if (e.key !== 'Escape') return;
   var o = document.getElementById('pfOverlay');
-  if (o.classList.contains('open')) pfClose();
-  else if (document.getElementById('docOverlay').classList.contains('open')) closeDoc();
+  if (o && o.classList.contains('open')) pfClose();
+  else if (document.getElementById('docOverlay') && document.getElementById('docOverlay').classList.contains('open')) closeDoc();
+  else if (document.getElementById('payslipOverlay') && document.getElementById('payslipOverlay').classList.contains('open')) closePayslipModal();
+  else if (document.getElementById('addPaymentOverlay') && document.getElementById('addPaymentOverlay').classList.contains('open')) closeAddPaymentModal();
+  else if (document.getElementById('uploadNewDocOverlay') && document.getElementById('uploadNewDocOverlay').classList.contains('open')) closeUploadNewDocModal();
 });
 
 /* ---------------- misc helpers ---------------- */
@@ -2835,7 +3785,8 @@ function refreshIcons() {
 /* init */
 renderYos();
 calcSalary();
-toggleSalaryLock();
+renderSalaryView();
+renderPaymentHistory();
 </script>
 </body>
 </html>
