@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Easework — Employee Management (Prototype)</title>
+<title>Easework — User Management (Prototype)</title>
 <!--
   THESIS: an Operate-mode employee record that extends the Easework enterprise management design system to an HR screen; it refuses the consumer-dashboard default by reusing the shell (top module header, breadcrumb bar, master-detail sidebar, purple underline tabs, lavender role cards) and proving every proto field is findable and role-aware.
   OWN-WORLD: Easework enterprise language — vivid purple #5B20E8 on near-white #F8F9FB, hairline #E5E7EB borders, flat cards with 10-14px radii, compact 18-22px Lucide outline icons, dense-but-spacious 3-column field grids.
@@ -487,6 +487,41 @@
   .team-card .rc-info .rc-name { color: #1D4ED8; }
   .rc-info .rc-id { font-size: 12px; color: var(--text-3); }
 
+  /* ================= KEY-VALUE DISPLAY ================= */
+  .kv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 20px; }
+  .kv-item {
+    border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px;
+    background: var(--surface-2); min-width: 0;
+  }
+  .kv-item .k {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .kv-item .k .icon { width: 13px; height: 13px; color: var(--purple); }
+  .kv-item .v { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 5px; word-break: break-word; }
+  .kv-item .v.muted { color: var(--text-3); font-weight: 500; }
+  .kv-item .sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .kv-item .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+
+  /* ================= TEAMS GRID ================= */
+  .team-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+
+  /* ================= INTEGRATIONS ================= */
+  .integ-card {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+    background: var(--surface-2);
+  }
+  .integ-logo {
+    width: 40px; height: 40px; border-radius: 10px; flex: none;
+    background: #5865F2; color: #fff; display: grid; place-items: center;
+    font-weight: 700; font-size: 16px;
+  }
+  .integ-main { flex: 1; min-width: 0; }
+  .integ-name { font-size: 14.5px; font-weight: 600; color: var(--text); }
+  .integ-desc { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+
   /* ================= SALARY ================= */
   .sal-lines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 22px; }
   .sal-item {
@@ -771,7 +806,6 @@
   /* role visibility */
   body[data-role="employee"] .only-supervisor { display: none !important; }
   body[data-role="supervisor"] .only-employee { display: none !important; }
-  body[data-role="employee"] .sidebar { display: none !important; }
 
   /* ================= TOAST ================= */
   .toast-wrap { position: fixed; right: 20px; bottom: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
@@ -798,6 +832,8 @@
   .switch input:checked + .track::after { transform: translateX(15px); }
   .switch input:focus-visible + .track { outline: 2px solid var(--purple); outline-offset: 2px; }
 
+  #biEmpId:empty::after, #metaEmpId:empty::after { content: "—"; color: var(--text-3); }
+
   .ewai-status {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 12px; font-weight: 700; line-height: 1;
@@ -817,7 +853,7 @@
 
   @media (max-width: 1080px) {
     .module-nav { overflow-x: auto; }
-    .form-grid, .kyc-grid, .sal-lines { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .form-grid, .kyc-grid, .sal-lines, .kv-grid, .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 900px) {
     .sidebar { display: none; }
@@ -831,7 +867,7 @@
     .seg button { padding: 6px 9px; }
     .breadcrumb { overflow-x: auto; }
     .content { padding: 14px 14px 40px; }
-    .form-grid, .kyc-grid, .sal-lines, .role-grid { grid-template-columns: 1fr; }
+    .form-grid, .kyc-grid, .sal-lines, .role-grid, .kv-grid, .team-grid { grid-template-columns: 1fr; }
     .form-grid.cols-2 { grid-template-columns: 1fr; }
     .emp-head { padding: 18px 16px 14px; gap: 16px; }
     .emp-name { font-size: 24px; }
@@ -856,7 +892,7 @@
   </div>
 
   <nav class="module-nav" aria-label="Modules">
-    <button class="module active"><span class="icon" data-icon="users"></span><span>EMP MGT</span></button>
+    <button class="module active"><span class="icon" data-icon="users"></span><span>USER MGT</span></button>
     <button class="module" onclick="toast('Role Mgt module is out of scope for this prototype')"><span class="icon" data-icon="shield"></span><span>ROLE MGT</span></button>
     <button class="module" onclick="toast('Config module is out of scope for this prototype')"><span class="icon" data-icon="settings"></span><span>CONFIG</span></button>
     <button class="module" onclick="toast('Org module is out of scope for this prototype')"><span class="icon" data-icon="building"></span><span>ORG</span></button>
@@ -881,7 +917,7 @@
   <span class="sep"><span class="icon" data-icon="chevron"></span></span>
   <span class="crumb" onclick="toast('Enterprise Management System')">Enterprise Management System</span>
   <span class="sep"><span class="icon" data-icon="chevron"></span></span>
-  <span class="crumb" onclick="toast('Employee Management list')">Employee Management</span>
+  <span class="crumb" onclick="toast('User Management list')">User Management</span>
   <span class="sep"><span class="icon" data-icon="chevron"></span></span>
   <span class="current" id="crumbName">Yash Sharma</span>
 </nav>
@@ -892,7 +928,7 @@
   <aside class="sidebar">
     <div class="side-head">
       <div class="side-title-row">
-        <h1 class="side-title">Employee Management</h1>
+        <h1 class="side-title">User Management</h1>
         <button class="btn btn-primary btn-sm" onclick="pfAdd()"><span class="icon" data-icon="plus"></span>Add</button>
       </div>
       <div class="side-search">
@@ -906,24 +942,19 @@
     <div class="side-list" id="userList">
       <div class="side-label" id="sideListLabel">All users</div>
 
-      <div class="emp-item selected" data-user='{"name":"Yash Sharma","sub":"EMP-0142 · Engineering · Fullstack Engineer","initials":"AS","color":"#5B20E8","active":true}'>
-        <span class="emp-av" style="background:#5B20E8">AS<span class="dot"></span></span>
+      <div class="emp-item selected" data-user='{"name":"Yash Sharma","sub":"EMP-0142 · Engineering · Fullstack Engineer","initials":"YS","color":"#5B20E8","active":true,"ewai":true,"empId":"EMP-0142","dept":"Engineering","role":"Fullstack Engineer","email":"yash.sharma@easework.in","joined":"12 Mar 2021","basic":{"fname":"Yash","lname":"Sharma","startDate":"12 Mar 2021","dept":"Engineering","erp":"SAP S/4HANA","site":"MSIL-B","company":"Maruti Suzuki India Limited","companyCode":"MSIL01","porg":"Maruti","porgCode":"PO-MRT001-01","supervisor":"RATHA N","supervisorEmail":"ratha@easeworkai.com","timezone":"Asia/Kolkata","reqLimit":"$10,000.00","costCenter":"CC-ENG-01","capex":"No","workOrder":"WO-2021-0142"}}'>
+        <span class="emp-av" style="background:#5B20E8">YS<span class="dot"></span></span>
         <span class="emp-info"><span class="name">Yash Sharma</span><span class="sub">EMP-0142 · Engineering · Fullstack Engineer</span></span>
       </div>
 
-      <div class="emp-item" data-user='{"name":"Mayank K.","sub":"EMP-0007 · Human Resources · HR Manager","initials":"MK","color":"#0E7490","active":true}'>
+      <div class="emp-item" data-user='{"name":"Vikram Mehta","sub":"IT · Procurement Buyer","initials":"VM","color":"#1D4ED8","active":true,"ewai":false,"empId":"","dept":"IT","role":"Procurement Buyer","email":"vikram.mehta@maruti.in","joined":"26 May 2026","basic":{"fname":"Vikram","lname":"Mehta","startDate":"May 26, 2026","dept":"IT","erp":"Ariba","site":"MSIL-G","company":"Maruti Suzuki India Limited","companyCode":"MSIL01","porg":"Maruti","porgCode":"PO-MRT001-01","supervisor":"RATHA N","supervisorEmail":"ratha@easeworkai.com","timezone":"Asia/Kolkata","reqLimit":"$100,000.00","costCenter":"CC-IT-21","capex":"Yes","workOrder":"WO-2026-0901"}}'>
+        <span class="emp-av" style="background:#1D4ED8">VM<span class="dot"></span></span>
+        <span class="emp-info"><span class="name">Vikram Mehta</span><span class="sub">IT · Procurement Buyer</span></span>
+      </div>
+
+      <div class="emp-item" data-user='{"name":"Mayank K.","sub":"EMP-0007 · Human Resources · HR Manager","initials":"MK","color":"#0E7490","active":true,"ewai":true,"empId":"EMP-0007","dept":"Human Resources","role":"HR Manager","email":"mayank.k@easework.in","joined":"02 Feb 2019","basic":{"fname":"Mayank","lname":"K.","startDate":"02 Feb 2019","dept":"Human Resources","erp":"SAP SuccessFactors","site":"MSIL-G","company":"Maruti Suzuki India Limited","companyCode":"MSIL01","porg":"Maruti","porgCode":"PO-MRT001-01","supervisor":"YASH S","supervisorEmail":"yash.sharma@easework.in","timezone":"Asia/Kolkata","reqLimit":"$0.00","costCenter":"CC-HR-07","capex":"No","workOrder":"WO-2020-0007"}}'>
         <span class="emp-av" style="background:#0E7490">MK<span class="dot"></span></span>
         <span class="emp-info"><span class="name">Mayank K.</span><span class="sub">EMP-0007 · Human Resources · HR Manager</span></span>
-      </div>
-
-      <div class="emp-item" data-user='{"name":"Komal Solanki","sub":"EMP-0088 · Finance · Payroll Officer","initials":"KS","color":"#B45309","active":true}'>
-        <span class="emp-av" style="background:#B45309">KS<span class="dot"></span></span>
-        <span class="emp-info"><span class="name">Komal Solanki</span><span class="sub">EMP-0088 · Finance · Payroll Officer</span></span>
-      </div>
-
-      <div class="emp-item" data-user='{"name":"Ratha N.","sub":"EMP-0031 · Operations · Ops Analyst","initials":"RN","color":"#15803D","active":true}'>
-        <span class="emp-av" style="background:#15803D">RN<span class="dot"></span></span>
-        <span class="emp-info"><span class="name">Ratha N.</span><span class="sub">EMP-0031 · Operations · Ops Analyst</span></span>
       </div>
     </div>
 
@@ -940,7 +971,7 @@
     <!-- Detail header -->
     <div class="emp-head">
       <div class="emp-av-wrap">
-        <div class="emp-avatar" id="detailAvatar">AS</div>
+        <div class="emp-avatar" id="detailAvatar" style="background:#5B20E8">YS</div>
         <span class="dot"></span>
       </div>
       <div class="emp-main">
@@ -952,7 +983,7 @@
         <div class="emp-pills">
           <span class="pill pill-dept" id="detailDept"><span class="icon" data-icon="building"></span>Engineering</span>
           <span class="pill pill-perm" id="flagVal"><span class="icon" data-icon="check"></span>Permanent</span>
-          <span class="pill pill-type"><span class="icon" data-icon="shield"></span>EWAI Employee</span>
+          <span class="pill pill-type" id="ewaiTypePill"><span class="icon" data-icon="shield"></span>EWAI Employee</span>
           <span class="pill pill-active" id="empActivePill"><span class="icon" data-icon="check"></span>Active</span>
         </div>
       </div>
@@ -976,7 +1007,10 @@
 
     <!-- Tabs -->
     <nav class="tabs" role="tablist" aria-label="Employee record sections">
-      <button class="tab active" data-tab="personal" role="tab" aria-selected="true"><span class="icon" data-icon="user"></span>Personal Info</button>
+      <button class="tab active" data-tab="basic" role="tab" aria-selected="true"><span class="icon" data-icon="id"></span>Basic Information</button>
+      <button class="tab" data-tab="roles" role="tab" aria-selected="false"><span class="icon" data-icon="shield"></span>Roles and Teams</button>
+      <button class="tab" data-tab="integrations" role="tab" aria-selected="false"><span class="icon" data-icon="settings"></span>Integrations</button>
+      <button class="tab" data-tab="personal" role="tab" aria-selected="false"><span class="icon" data-icon="user"></span>Personal Info</button>
       <button class="tab" data-tab="employment" role="tab" aria-selected="false"><span class="icon" data-icon="briefcase"></span>Employment History</button>
       <button class="tab" data-tab="skills" role="tab" aria-selected="false"><span class="icon" data-icon="graduation"></span>Education &amp; Skills</button>
       <button class="tab" data-tab="salary" role="tab" aria-selected="false"><span class="icon" data-icon="wallet"></span>Salary &amp; Tax</button>
@@ -986,29 +1020,246 @@
       <button class="tab" data-tab="feedback" role="tab" aria-selected="false"><span class="icon" data-icon="message"></span>Feedback</button>
     </nav>
 
+    <!-- ================= BASIC INFORMATION ================= -->
+    <section class="panel active" id="panel-basic" data-tab-panel="basic">
+      <div class="section">
+        <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="id"></span></span>
+          <div>
+            <h2>Basic information</h2>
+            <p>Master procurement data mapped to this EWAI employee record.</p>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-secondary btn-sm" onclick="pfOpen('basic')"><span class="icon" data-icon="edit"></span>Edit</button>
+        </div>
+        <div class="kv-grid">
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="id"></span>EWAI Employee</div>
+            <div class="v mono" id="biEmpId"></div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="user"></span>First Name</div>
+            <div class="v" id="biFName">Vikram</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="user"></span>Last Name</div>
+            <div class="v" id="biLName">Mehta</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="calendar"></span>Start Date</div>
+            <div class="v" id="biStartDate">May 26, 2026</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="building"></span>Department</div>
+            <div class="v" id="biDept">IT</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="layers"></span>ERP System</div>
+            <div class="v" id="biErp">Ariba</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="pin"></span>Site</div>
+            <div class="v" id="biSite">MSIL-G</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="building"></span>Company</div>
+            <div class="v" id="biCompany">Maruti Suzuki India Limited</div>
+            <div class="sub mono" id="biCompanyCode">Code: MSIL01</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="box"></span>Purchase Org</div>
+            <div class="v" id="biPorg">Maruti</div>
+            <div class="sub mono" id="biPorgCode">Code: PO-MRT001-01</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="shield"></span>Supervisor</div>
+            <div class="v" id="biSupervisor">RATHA N</div>
+            <div class="sub" id="biSupervisorEmail">ratha@easeworkai.com</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="clock"></span>Timezone</div>
+            <div class="v" id="biTimezone">Asia/Kolkata</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="globe"></span>Country</div>
+            <div class="v muted" id="biCountry">–</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="layers"></span>Category</div>
+            <div class="v muted" id="biCategory">–</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="wallet"></span>Requisition Limit</div>
+            <div class="v" id="biReqLimit">$100,000.00</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="id"></span>Cost Center</div>
+            <div class="v muted" id="biCostCenter">–</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="wallet"></span>Capex</div>
+            <div class="v muted" id="biCapex">–</div>
+          </div>
+          <div class="kv-item">
+            <div class="k"><span class="icon" data-icon="file"></span>Work Order</div>
+            <div class="v muted" id="biWorkOrder">–</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ROLES & TEAMS ================= -->
+    <section class="panel" id="panel-roles" data-tab-panel="roles">
+      <div class="section">
+        <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="shield"></span></span>
+          <div>
+            <h2>Assigned Roles</h2>
+            <p>Platform roles granted to this EWAI employee.</p>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-secondary btn-sm" onclick="pfOpen('roles')"><span class="icon" data-icon="edit"></span>Edit</button>
+        </div>
+        <div class="role-grid" id="roleGrid">
+          <div class="role-card">
+            <span class="rc-icon"><span class="icon" data-icon="shield"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">Super-admin</div>
+              <div class="rc-id">ID: super-admin</div>
+            </div>
+          </div>
+          <div class="role-card">
+            <span class="rc-icon"><span class="icon" data-icon="user"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">Buyer</div>
+              <div class="rc-id">ID: buyer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="users"></span></span>
+          <div>
+            <h2>Assigned Teams</h2>
+            <p>Teams this EWAI employee is a member of.</p>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-secondary btn-sm" onclick="pfOpen('roles')"><span class="icon" data-icon="edit"></span>Edit</button>
+        </div>
+        <div class="team-grid" id="teamGrid">
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">RPA</div>
+              <div class="rc-id">ID: 0008</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">faceless_procurement</div>
+              <div class="rc-id">ID: 0009</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">middleware</div>
+              <div class="rc-id">ID: 0010</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">chicago_po_to_so</div>
+              <div class="rc-id">ID: 0002</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">chicago_middleware</div>
+              <div class="rc-id">ID: 0003</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">trials_northwest</div>
+              <div class="rc-id">ID: 0005</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">dibert_po_to_so</div>
+              <div class="rc-id">ID: 0001</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">hrv_inq_to_quote</div>
+              <div class="rc-id">ID: 0004</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <span class="rc-icon"><span class="icon" data-icon="users"></span></span>
+            <div class="rc-info">
+              <div class="rc-name">ewai_support</div>
+              <div class="rc-id">ID: 0011</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= INTEGRATIONS ================= -->
+    <section class="panel" id="panel-integrations" data-tab-panel="integrations">
+      <div class="section">
+        <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="settings"></span></span>
+          <div>
+            <h2>Integrations</h2>
+            <p>Connected external services for notifications and automation.</p>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-secondary btn-sm" onclick="pfOpen('integrations')"><span class="icon" data-icon="edit"></span>Edit</button>
+        </div>
+        <div class="integ-card">
+          <span class="integ-logo">D</span>
+          <div class="integ-main">
+            <div class="integ-name">Discord</div>
+            <div class="integ-desc">Connect your Discord account for notifications</div>
+          </div>
+          <span class="badge b-green"><span class="icon" data-icon="check"></span>Connected</span>
+          <button class="btn btn-danger btn-sm" onclick="toast('Disconnecting Discord is out of scope for this prototype')"><span class="icon" data-icon="trash"></span>Disconnect</button>
+        </div>
+        <div class="form-grid" style="margin-top:16px">
+          <label class="field">
+            <span class="field-label">Discord ID</span>
+            <input class="input is-mono" id="integDiscordId" value="751826200489492532" />
+          </label>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= PERSONAL ================= -->
-    <section class="panel active" id="panel-personal" data-tab-panel="personal">
+    <section class="panel" id="panel-personal" data-tab-panel="personal">
       <div class="section">
         <div class="section-head">
           <span class="head-icon"><span class="icon" data-icon="user"></span></span>
           <div>
-            <h2>Basic information</h2>
+            <h2>Personal information</h2>
             <p>Demographic fields, editable by the employee or a supervisor.</p>
           </div>
           <div class="spacer"></div>
           <button class="btn btn-secondary btn-sm" onclick="pfOpen('personal')"><span class="icon" data-icon="edit"></span>Edit</button>
         </div>
         <div class="form-grid">
-          <label class="field"><span class="field-label">Full name <span class="req">*</span></span><input class="input" id="pName" value="Yash Sharma" /></label>
-          <label class="field"><span class="field-label">Role / Designation</span><input class="input" id="pRole" value="Fullstack Engineer" /></label>
-          <label class="field"><span class="field-label">Team / Department</span>
-            <select class="select" id="pTeam">
-              <option selected>Engineering</option>
-              <option>Human Resources</option>
-              <option>Finance</option>
-              <option>Operations</option>
-            </select>
-          </label>
+          
           <label class="field">
             <span class="field-label">Employment type</span>
             <select class="select" id="pEmpType">
@@ -1903,7 +2154,7 @@
       </div>
     </section>
 
-    <p class="footer-note">Easework · Employee Management prototype · All people and figures are illustrative demo data.</p>
+    <p class="footer-note">Easework · User Management prototype · All people and figures are illustrative demo data.</p>
   </main>
 </div>
 
@@ -2201,7 +2452,8 @@ var ICONS = {
   box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
   truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
   sort: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 12 3-6 3 6"/><path d="m6 12 2-4 2 4"/><path d="M11 18h8"/><path d="M6 18h.01"/></svg>',
-  filter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54Z"/></svg>'
+  filter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54Z"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>'
 };
 
 document.querySelectorAll('[data-icon]').forEach(function (el) {
@@ -2221,22 +2473,47 @@ function toast(msg) {
 }
 
 /* ---------------- sidebar: select user ---------------- */
+function selectUser(item, silent) {
+  document.querySelectorAll('.emp-item').forEach(function (i) { i.classList.remove('selected'); });
+  item.classList.add('selected');
+  var u = JSON.parse(item.getAttribute('data-user'));
+  var parts = (u.sub || '').split('·').map(function (s) { return s.trim(); });
+  document.getElementById('detailName').textContent = u.name;
+  document.getElementById('detailAvatar').textContent = u.initials;
+  document.getElementById('crumbName').textContent = u.name;
+  document.getElementById('detailAvatar').style.background = u.color;
+  document.getElementById('metaEmpId').textContent = (u.empId !== undefined ? u.empId : (parts[0] || ''));
+  document.getElementById('biEmpId').textContent = (u.empId !== undefined ? u.empId : '');
+  var b = u.basic || {};
+  var biSet = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v || ''; };
+  biSet('biFName', b.fname);
+  biSet('biLName', b.lname);
+  biSet('biStartDate', b.startDate);
+  biSet('biDept', b.dept);
+  biSet('biErp', b.erp);
+  biSet('biSite', b.site);
+  biSet('biCompany', b.company);
+  biSet('biCompanyCode', b.companyCode ? 'Code: ' + b.companyCode : '');
+  biSet('biPorg', b.porg);
+  biSet('biPorgCode', b.porgCode ? 'Code: ' + b.porgCode : '');
+  biSet('biSupervisor', b.supervisor);
+  biSet('biSupervisorEmail', b.supervisorEmail);
+  biSet('biTimezone', b.timezone);
+  biSet('biReqLimit', b.reqLimit);
+  biSet('biCostCenter', b.costCenter);
+  biSet('biCapex', b.capex);
+  biSet('biWorkOrder', b.workOrder);
+  if (parts[1] || u.dept) document.getElementById('detailDept').childNodes[1].textContent = u.dept || parts[0] || parts[1] || '';
+  document.getElementById('detailRole').textContent = u.role || parts[1] || parts[2] || '';
+  if (u.email) document.getElementById('detailEmail').textContent = u.email;
+  if (u.joined) document.getElementById('metaJoined').textContent = u.joined;
+  applyEwaiTabVisibility();
+  updateEwaiPill(getEwaiState());
+  renderPaymentHistory();
+  if (!silent) toast('Opened ' + u.name + ' (demo)');
+}
 document.querySelectorAll('.emp-item').forEach(function (item) {
-  item.addEventListener('click', function () {
-    document.querySelectorAll('.emp-item').forEach(function (i) { i.classList.remove('selected'); });
-    item.classList.add('selected');
-    var u = JSON.parse(item.getAttribute('data-user'));
-    var parts = (u.sub || '').split('·').map(function (s) { return s.trim(); });
-    document.getElementById('detailName').textContent = u.name;
-    document.getElementById('detailAvatar').textContent = u.initials;
-    document.getElementById('crumbName').textContent = u.name;
-    document.getElementById('detailAvatar').style.background = u.color;
-    if (parts[0]) document.getElementById('metaEmpId').textContent = parts[0];
-    if (parts[1]) document.getElementById('detailDept').childNodes[1].textContent = parts[1];
-    if (parts[2]) document.getElementById('detailRole').textContent = parts[2];
-    renderPaymentHistory();
-    toast('Opened ' + u.name + ' (demo)');
-  });
+  item.addEventListener('click', function () { selectUser(item); });
 });
 
 /* ---------------- sidebar: filter users ---------------- */
@@ -2252,36 +2529,67 @@ function filterUsers(q) {
 
 /* ---------------- sidebar: role-based visibility ---------------- */
 function updateSidebarForRole(role) {
-  var sidebar = document.querySelector('.sidebar');
-  if (role === 'employee') {
-    sidebar.style.display = 'none';
-  } else {
-    sidebar.style.display = '';
-  }
   document.querySelectorAll('#userList .emp-item').forEach(function (item) {
-    var hidden = role === 'employee' && !item.classList.contains('selected');
-    item.setAttribute('data-role-hidden', hidden ? '1' : '0');
-    item.style.display = hidden ? 'none' : '';
+    item.setAttribute('data-role-hidden', '0');
+    item.style.display = '';
   });
   var label = document.getElementById('sideListLabel');
-  if (label) label.textContent = role === 'employee' ? 'My profile' : 'All users';
+  if (label) label.textContent = 'All users';
 }
 
 /* ---------------- tabs ---------------- */
-var CURRENT_TAB = 'personal';
-document.querySelectorAll('.tab').forEach(function (tab) {
-  tab.addEventListener('click', function () {
-    document.querySelectorAll('.tab').forEach(function (t) {
-      t.classList.toggle('active', t === tab);
-      t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
-    });
-    CURRENT_TAB = tab.getAttribute('data-tab');
-    document.querySelectorAll('[data-tab-panel]').forEach(function (p) {
-      p.classList.toggle('active', p.getAttribute('data-tab-panel') === tab.getAttribute('data-tab'));
-    });
-    document.querySelector('.content').scrollTop = 0;
+var CURRENT_TAB = 'basic';
+var EWAI_TABS = ['basic', 'roles', 'integrations'];
+var HR_TABS = ['personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc', 'feedback'];
+var ALL_TABS = EWAI_TABS.concat(HR_TABS);
+function activateTab(name) {
+  if (!name) return;
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.classList.toggle('active', t.getAttribute('data-tab') === name);
+    t.setAttribute('aria-selected', t.getAttribute('data-tab') === name ? 'true' : 'false');
   });
+  CURRENT_TAB = name;
+  document.querySelectorAll('[data-tab-panel]').forEach(function (p) {
+    p.classList.toggle('active', p.getAttribute('data-tab-panel') === name);
+  });
+  document.querySelector('.content').scrollTop = 0;
+}
+document.querySelectorAll('.tab').forEach(function (tab) {
+  tab.addEventListener('click', function () { activateTab(tab.getAttribute('data-tab')); });
 });
+
+/* ---------------- EWAI employee (tab visibility driven by Employee ID) ---------------- */
+function readEmpId() {
+  var el = document.getElementById('biEmpId');
+  if (!el) return '';
+  return ((el.value !== undefined ? el.value : el.textContent) || '').trim();
+}
+function getEwaiState() {
+  return readEmpId() !== '';
+}
+function getVisibleTabs() {
+  if (document.body.getAttribute('data-role') === 'employee') {
+    return getActiveEmpName() === 'Yash Sharma' ? ALL_TABS : EWAI_TABS;
+  }
+  return getEwaiState() ? ALL_TABS : EWAI_TABS;
+}
+function applyEwaiTabVisibility() {
+  var visible = getVisibleTabs();
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.style.display = visible.indexOf(t.getAttribute('data-tab')) > -1 ? '' : 'none';
+  });
+  document.querySelectorAll('[data-tab-panel]').forEach(function (p) {
+    p.style.display = visible.indexOf(p.getAttribute('data-tab-panel')) > -1 ? '' : 'none';
+  });
+  if (visible.indexOf(CURRENT_TAB) === -1) activateTab(visible[0]);
+}
+function updateEwaiPill(v) {
+  var pill = document.getElementById('ewaiTypePill');
+  if (!pill) return;
+  var on = !!v;
+  pill.innerHTML = '<span class="icon" data-icon="' + (on ? 'shield' : 'globe') + '"></span>' + (on ? 'EWAI Employee' : 'External User');
+  refreshIcons();
+}
 
 /* ---------------- role toggle ---------------- */
 function setRole(role) {
@@ -2306,6 +2614,7 @@ function setRole(role) {
       el.disabled = role === 'employee';
     });
   });
+  applyEwaiTabVisibility();
   renderSalaryView();
 }
 document.getElementById('roleEmployee').addEventListener('click', function () { setRole('employee'); toast('Switched to Employee view'); });
@@ -2982,7 +3291,7 @@ function addSkill() {
 }
 function removeChip(btn) {
   btn.closest('.chip').remove();
-  toast('Skill removed');
+  toast('Item removed');
 }
 
 /* ---------------- documents ---------------- */
@@ -3108,6 +3417,9 @@ function escAttr(s) {
 }
 
 var PF_TABS = {
+  basic:      { label: 'Basic Information', icon: 'id',       title: 'Edit Basic Information',      sub: 'Update EWAI employee master data, supervisor mapping and procurement fields.' },
+  roles:      { label: 'Roles and Teams',   icon: 'shield',   title: 'Edit Roles and Teams',        sub: 'Assign platform roles and team memberships for this employee.' },
+  integrations: { label: 'Integrations',    icon: 'settings', title: 'Edit Integrations',           sub: 'Connect external services for notifications and automation.' },
   personal:   { label: 'Personal Info',      icon: 'user',       title: 'Edit Personal Information',  sub: 'Update demographic, address and emergency contact information.' },
   employment: { label: 'Employment',         icon: 'briefcase',  title: 'Edit Employment History',    sub: 'Update employment record and prior experience.' },
   skills:     { label: 'Education & Skills', icon: 'graduation', title: 'Edit Education & Skills',    sub: 'Manage skills, education and certificates.' },
@@ -3117,7 +3429,7 @@ var PF_TABS = {
   kyc:        { label: 'Bank & KYC',         icon: 'bank',       title: 'Edit Bank & KYC',            sub: 'Update identity, statutory and bank details.' },
   feedback:   { label: 'Feedback',           icon: 'message',    title: 'Add / Edit Feedback',        sub: 'Raise messages, give supervisor feedback and ratings.' }
 };
-var PF_ORDER = ['personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc', 'feedback'];
+var PF_ORDER = ['basic', 'roles', 'integrations', 'personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc', 'feedback'];
 var PF_ACTIVE = 'personal';
 var PF_FB_EDIT = null;
 var PF_ADD_MODE = false;
@@ -3128,6 +3440,7 @@ function pfAdd() {
 }
 function pfOpen(tab) {
   if (PF_TABS[tab]) PF_ACTIVE = tab;
+  else PF_ACTIVE = 'personal';
   buildPfNav();
   buildPfContent();
   document.getElementById('pfOverlay').classList.add('open');
@@ -3145,8 +3458,10 @@ function pfGo(tab) {
 function buildPfNav() {
   var html = '';
   var isEmployee = document.body.getAttribute('data-role') === 'employee';
+  var visible = getVisibleTabs();
   PF_ORDER.forEach(function (k) {
     if (isEmployee && k === 'salary') return;
+    if (visible.indexOf(k) === -1) return;
     var t = PF_TABS[k];
     html += '<button class="pf-nav-btn' + (k === PF_ACTIVE ? ' active' : '') + '" onclick="pfGo(\'' + k + '\')"><span class="icon" data-icon="' + t.icon + '"></span>' + t.label + '</button>';
   });
@@ -3160,6 +3475,8 @@ function setPfHead() {
 function buildPfContent() {
   var role = document.body.getAttribute('data-role');
   if (role === 'employee' && PF_ACTIVE === 'salary') PF_ACTIVE = 'personal';
+  var visible = getVisibleTabs();
+  if (visible.indexOf(PF_ACTIVE) === -1) PF_ACTIVE = visible[0];
   setPfHead();
   var fn = PF_BUILD[PF_ACTIVE];
   document.getElementById('pfForm').innerHTML = fn ? fn() : '';
@@ -3243,11 +3560,8 @@ function syncTable(srcId, pfId) {
 /* ---- Personal ---- */
 function pfBuildPersonal() {
   var h = '';
-  h += '<div class="pf-subhead"><span class="icon" data-icon="user"></span>Basic information</div>';
+  h += '<div class="pf-subhead"><span class="icon" data-icon="user"></span>Personal information</div>';
   h += '<div class="pf-grid">';
-  h += pfField('Full name', pfInputControl('pName'), { req: true });
-  h += pfField('Role / Designation', pfInputControl('pRole'));
-  h += pfField('Team / Department', pfSelectControl('pTeam'));
   h += pfField('Employment type', pfSelectControl('pEmpType'));
   h += pfField('Gender', pfSelectControl('pGender'));
   h += pfField('Marital status', pfSelectControl('pMarital'));
@@ -3290,17 +3604,19 @@ function pfBuildPersonal() {
 }
 
 function pfSyncPersonalHeader() {
-  var name = (document.getElementById('pName').value || '').trim();
-  var role = (document.getElementById('pRole').value || '').trim();
-  var team = document.getElementById('pTeam').value;
-  if (name) {
-    document.getElementById('detailName').textContent = name;
-    document.getElementById('crumbName').textContent = name;
-    var words = name.split(/\s+/).filter(function (w) { return w.length > 0; });
-    document.getElementById('detailAvatar').textContent = (words[0][0] + (words[1] ? words[1][0] : '')).toUpperCase();
-  }
-  if (role) document.getElementById('detailRole').textContent = role;
-  if (team) document.getElementById('detailDept').childNodes[1].textContent = team;
+  var team = document.getElementById('pTeam');
+  if (team) document.getElementById('detailDept').childNodes[1].textContent = team.value;
+}
+
+function pfSyncBasicHeader() {
+  var f = document.getElementById('biFName');
+  var l = document.getElementById('biLName');
+  var name = ((f ? f.textContent.trim() : '') + ' ' + (l ? l.textContent.trim() : '')).trim();
+  if (!name) return;
+  document.getElementById('detailName').textContent = name;
+  document.getElementById('crumbName').textContent = name;
+  var words = name.split(/\s+/).filter(function (w) { return w.length > 0; });
+  document.getElementById('detailAvatar').textContent = (words[0][0] + (words[1] ? words[1][0] : '')).toUpperCase();
 }
 
 /* ---- Employment ---- */
@@ -3729,8 +4045,155 @@ function pfSaveFeedback() {
   return true;
 }
 
+/* ---- Basic Information ---- */
+function pfBuildBasic() {
+  var h = '';
+  h += '<div class="pf-subhead"><span class="icon" data-icon="id"></span>EWAI employee master</div>';
+  h += '<div class="pf-grid">';
+  h += pfField('EWAI Employee', pfInputControl('biEmpId', { mono: true }));
+  h += pfField('First Name', pfInputControl('biFName'), { req: true });
+  h += pfField('Last Name', pfInputControl('biLName'), { req: true });
+  h += pfField('Start Date', pfInputControl('biStartDate', { placeholder: 'e.g. May 26, 2026' }));
+  h += pfField('Department', pfInputControl('biDept'));
+  h += pfField('ERP System', pfInputControl('biErp'));
+  h += pfField('Site', pfInputControl('biSite'));
+  h += pfField('Company', pfInputControl('biCompany'), { full: true });
+  h += pfField('Company Code', pfInputControl('biCompanyCode', { mono: true }));
+  h += pfField('Purchase Org', pfInputControl('biPorg'));
+  h += pfField('Purchase Org Code', pfInputControl('biPorgCode', { mono: true }));
+  h += pfField('Supervisor', pfInputControl('biSupervisor'));
+  h += pfField('Supervisor Email', pfInputControl('biSupervisorEmail', { mono: true }));
+  h += pfField('Timezone', pfInputControl('biTimezone'));
+  h += pfField('Country', pfInputControl('biCountry'));
+  h += pfField('Category', pfInputControl('biCategory'));
+  h += pfField('Requisition Limit', pfInputControl('biReqLimit', { mono: true }));
+  h += pfField('Cost Center', pfInputControl('biCostCenter'));
+  h += pfField('Capex', pfInputControl('biCapex'));
+  h += pfField('Work Order', pfInputControl('biWorkOrder'));
+  h += '</div>';
+  return h;
+}
+function pfSaveBasic() {
+  pfApply();
+  var pref = function (id, prefix) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var t = (el.textContent || '').trim();
+    if (t && t.indexOf(prefix) !== 0) el.textContent = prefix + t;
+  };
+  pref('biCompanyCode', 'Code: ');
+  pref('biPorgCode', 'Code: ');
+  document.getElementById('metaEmpId').textContent = readEmpId();
+  pfSyncBasicHeader();
+  applyEwaiTabVisibility();
+  updateEwaiPill(getEwaiState());
+}
+
+/* ---- Roles and Teams ---- */
+function pfRcChips(srcSel) {
+  var chips = '';
+  var cards = document.querySelectorAll(srcSel);
+  if (cards.length === 0) return '';
+  Array.prototype.forEach.call(cards, function (card) {
+    var nameEl = card.querySelector('.rc-name');
+    var idEl = card.querySelector('.rc-id');
+    var name = nameEl ? nameEl.textContent.trim() : '';
+    var id = idEl ? idEl.textContent.replace(/^ID:\s*/i, '').trim() : '';
+    chips += '<span class="chip" data-rc-name="' + escAttr(name) + '" data-rc-id="' + escAttr(id) + '">' + escapeHtml(name) + ' · ID: ' + escapeHtml(id) + '<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button></span>';
+  });
+  return chips;
+}
+function pfBuildRoles() {
+  var h = '';
+  h += '<div class="pf-subhead"><span class="icon" data-icon="shield"></span>Assigned Roles</div>';
+  h += '<div class="chips" id="pfRoleChips">' + (PF_ADD_MODE ? '' : pfRcChips('#roleGrid .role-card')) + '</div>';
+  h += '<div class="inline-add">' +
+    '<input class="input" id="pfRoleName" placeholder="Role name" style="max-width:220px" onkeydown="if(event.key===\'Enter\'){pfAddRole();event.preventDefault();}" />' +
+    '<input class="input is-mono" id="pfRoleId" placeholder="Role ID" style="max-width:190px" onkeydown="if(event.key===\'Enter\'){pfAddRole();event.preventDefault();}" />' +
+    '<button class="btn btn-secondary btn-sm" onclick="pfAddRole()"><span class="icon" data-icon="plus"></span>Add role</button>' +
+    '</div>';
+
+  h += '<div class="pf-subhead"><span class="icon" data-icon="users"></span>Assigned Teams</div>';
+  h += '<div class="chips" id="pfTeamChips">' + (PF_ADD_MODE ? '' : pfRcChips('#teamGrid .team-card')) + '</div>';
+  h += '<div class="inline-add">' +
+    '<input class="input" id="pfTeamName" placeholder="Team name" style="max-width:220px" onkeydown="if(event.key===\'Enter\'){pfAddTeam();event.preventDefault();}" />' +
+    '<input class="input is-mono" id="pfTeamId" placeholder="Team ID" style="max-width:190px" onkeydown="if(event.key===\'Enter\'){pfAddTeam();event.preventDefault();}" />' +
+    '<button class="btn btn-secondary btn-sm" onclick="pfAddTeam()"><span class="icon" data-icon="plus"></span>Add team</button>' +
+    '</div>';
+  return h;
+}
+function pfAddRole() {
+  var n = document.getElementById('pfRoleName').value.trim();
+  var id = document.getElementById('pfRoleId').value.trim();
+  if (!n) { toast('Enter a role name'); return; }
+  var chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.setAttribute('data-rc-name', n);
+  chip.setAttribute('data-rc-id', id);
+  chip.innerHTML = escapeHtml(n) + ' · ID: ' + escapeHtml(id) + '<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button>';
+  document.getElementById('pfRoleChips').appendChild(chip);
+  document.getElementById('pfRoleName').value = '';
+  document.getElementById('pfRoleId').value = '';
+  refreshIcons();
+  toast('Role added');
+}
+function pfAddTeam() {
+  var n = document.getElementById('pfTeamName').value.trim();
+  var id = document.getElementById('pfTeamId').value.trim();
+  if (!n) { toast('Enter a team name'); return; }
+  var chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.setAttribute('data-rc-name', n);
+  chip.setAttribute('data-rc-id', id);
+  chip.innerHTML = escapeHtml(n) + ' · ID: ' + escapeHtml(id) + '<button aria-label="Remove" onclick="removeChip(this)"><span class="icon" data-icon="x"></span></button>';
+  document.getElementById('pfTeamChips').appendChild(chip);
+  document.getElementById('pfTeamName').value = '';
+  document.getElementById('pfTeamId').value = '';
+  refreshIcons();
+  toast('Team added');
+}
+function pfSaveRoles() {
+  var build = function (sel, gridId, cls, icon) {
+    var html = '';
+    document.querySelectorAll(sel).forEach(function (c) {
+      var name = c.getAttribute('data-rc-name') || '';
+      var id = c.getAttribute('data-rc-id') || '';
+      html += '<div class="' + cls + '">' +
+        '<span class="rc-icon"><span class="icon" data-icon="' + icon + '"></span></span>' +
+        '<div class="rc-info"><div class="rc-name">' + escapeHtml(name) + '</div>' +
+        '<div class="rc-id">ID: ' + escapeHtml(id) + '</div></div></div>';
+    });
+    var grid = document.getElementById(gridId);
+    if (grid) grid.innerHTML = html || '<span class="doc-empty">None assigned</span>';
+  };
+  build('#pfRoleChips .chip', 'roleGrid', 'role-card', 'shield');
+  build('#pfTeamChips .chip', 'teamGrid', 'team-card', 'users');
+  refreshIcons();
+}
+
+/* ---- Integrations ---- */
+function pfBuildIntegrations() {
+  var h = '';
+  h += '<div class="pf-subhead"><span class="icon" data-icon="settings"></span>Discord</div>';
+  h += '<div class="pf-grid">';
+  h += pfField('Discord ID', pfInputControl('integDiscordId', { mono: true }));
+  h += '<div class="pf-field"><label class="pf-label">Status</label>' +
+    '<div class="input" style="background:var(--surface-3);display:flex;align-items:center;gap:8px;color:var(--green);font-weight:600">' +
+    '<span class="icon" data-icon="check" style="width:15px;height:15px;color:var(--green)"></span>Connected</div></div>';
+  h += '</div>';
+  h += '<div class="callout callout-info" style="margin-top:14px"><span class="icon" data-icon="info"></span>' +
+    '<span>Connect your Discord account for notifications. Disconnecting is handled on the Integrations tab.</span></div>';
+  return h;
+}
+function pfSaveIntegrations() {
+  pfApply();
+}
+
 /* ---- build / save / post registries ---- */
 var PF_BUILD = {
+  basic: pfBuildBasic,
+  roles: pfBuildRoles,
+  integrations: pfBuildIntegrations,
   personal: pfBuildPersonal,
   employment: pfBuildEmployment,
   skills: pfBuildSkills,
@@ -3746,6 +4209,9 @@ var PF_POST = {
   feedback: pfPostFeedback
 };
 var PF_SAVE = {
+  basic: pfSaveBasic,
+  roles: pfSaveRoles,
+  integrations: pfSaveIntegrations,
   personal: function () { pfApply(); pfSyncPersonalHeader(); },
   employment: function () { pfApply(); syncTable('expBody', 'pfExpBody'); renderYos(); },
   skills: pfSaveSkills,
@@ -3781,10 +4247,14 @@ function refreshIcons() {
 }
 
 /* init */
+var initUser = document.querySelector('.emp-item.selected');
+if (initUser) selectUser(initUser, true);
 renderYos();
 calcSalary();
 renderSalaryView();
 renderPaymentHistory();
+applyEwaiTabVisibility();
+updateEwaiPill(getEwaiState());
 </script>
 </body>
 </html>
