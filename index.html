@@ -8,7 +8,7 @@
   THESIS: an Operate-mode employee record that extends the Easework enterprise management design system to an HR screen; it refuses the consumer-dashboard default by reusing the shell (top module header, breadcrumb bar, master-detail sidebar, purple underline tabs, lavender role cards) and proving every proto field is findable and role-aware.
   OWN-WORLD: Easework enterprise language — vivid purple #5B20E8 on near-white #F8F9FB, hairline #E5E7EB borders, flat cards with 10-14px radii, compact 18-22px Lucide outline icons, dense-but-spacious 3-column field grids.
   STORY: whoever opens it (employee or supervisor) reads the shell like the rest of the product, understands which data they may touch, and sees salary and service years compute live.
-  FIRST VIEWPORT: 70px header with DEV badge and uppercase module nav, 56px breadcrumb, a 340px employee list sidebar, then a compact lavender-tinted employee header (circular avatar, 27px name + role badge, email, status pills, subtle secondary meta row, Edit/Delete top-right) followed by a slim underline tab bar (Personal Info, Employment History, Education & Skills, Salary & Tax, Documents, Assets, Bank & KYC, Feedback) above the content.
+  FIRST VIEWPORT: 70px header with DEV badge and uppercase module nav, 56px breadcrumb, a 340px employee list sidebar, then a compact lavender-tinted employee header (circular avatar, 27px name + role badge, email, status pills, subtle secondary meta row, Edit/Delete top-right) followed by a slim underline tab bar (Personal Info, Employment History, Education & Skills, Salary & Tax, Documents, Assets, Bank & KYC) above the content.
   FORM: Easework master-detail enterprise console, position 1, seed easework-console.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md.
 -->
@@ -373,6 +373,8 @@
     font-size: 13.5px; font-weight: 600; color: var(--text-3); pointer-events: none;
   }
   .field-wrap .prefix + .input { padding-left: 32px; }
+  .field-wrap .select { flex: none; }
+  .field-wrap .select + .input { flex: 1; min-width: 0; }
 
   .sub-head {
     font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
@@ -757,6 +759,7 @@
   .pf-table-scroll { overflow-x: auto; }
   .pf-form .inline-add { margin-top: 12px; }
 
+  /* FEEDBACK commented out:
   .pf-fb-row {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     border: 1px solid var(--border); border-radius: 9px;
@@ -765,6 +768,7 @@
   .pf-fb-row .pf-fb-topic { font-size: 13px; font-weight: 600; color: var(--text); min-width: 0; flex: 1; }
   .pf-fb-row .pf-fb-msg { font-size: 12.5px; color: var(--text-3); flex-basis: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pf-fb-row .pf-fb-status { font-size: 12px; font-weight: 600; color: var(--text-3); }
+  FEEDBACK */
 
   .pf-foot {
     display: flex; align-items: center; justify-content: flex-end; gap: 10px;
@@ -783,8 +787,8 @@
     .pf-foot { padding: 12px 16px; }
   }
 
-  /* ================= FEEDBACK ================= */
-  .fb-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; background: var(--surface); }
+  /* ================= FEEDBACK (commented out) ================= */
+  /* .fb-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; background: var(--surface); }
   .fb-card + .fb-card { margin-top: 14px; }
   .fb-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
   .fb-date { font-size: 12.5px; color: var(--text-3); }
@@ -801,7 +805,7 @@
   .stars .star.on { color: #F59E0B; }
   .stars .star .icon { width: 20px; height: 20px; }
   .fb-status { font-size: 12px; font-weight: 700; }
-  .fb-accept { margin-left: auto; display: flex; gap: 8px; }
+  .fb-accept { margin-left: auto; display: flex; gap: 8px; } */
 
   /* role visibility */
   body[data-role="employee"] .only-supervisor { display: none !important; }
@@ -1017,7 +1021,7 @@
       <button class="tab" data-tab="documents" role="tab" aria-selected="false"><span class="icon" data-icon="file"></span>Documents</button>
       <button class="tab" data-tab="assets" role="tab" aria-selected="false"><span class="icon" data-icon="monitor"></span>Assets</button>
       <button class="tab" data-tab="kyc" role="tab" aria-selected="false"><span class="icon" data-icon="bank"></span>Bank &amp; KYC</button>
-      <button class="tab" data-tab="feedback" role="tab" aria-selected="false"><span class="icon" data-icon="message"></span>Feedback</button>
+      <!-- <button class="tab" data-tab="feedback" role="tab" aria-selected="false"><span class="icon" data-icon="message"></span>Feedback</button> -->
     </nav>
 
     <!-- ================= BASIC INFORMATION ================= -->
@@ -1275,6 +1279,11 @@
             <select class="select" id="pGender">
               <option selected>Female</option>
               <option>Male</option>
+              <option>Non-binary</option>
+              <option>Genderqueer</option>
+              <option>Gender-fluid</option>
+              <option>Transgender</option>
+              <option>Intersex</option>
               <option>Other</option>
               <option>Prefer not to say</option>
             </select>
@@ -1313,6 +1322,34 @@
 
       <div class="section">
         <div class="section-head">
+          <span class="head-icon"><span class="icon" data-icon="calendar"></span></span>
+          <div>
+            <h2>Birth details</h2>
+            <p>Date and place of birth for statutory and background-check purposes.</p>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">Date of birth</span>
+            <input class="input" type="date" id="pDob" value="1995-02-14" />
+          </label>
+          <label class="field">
+            <span class="field-label">Country of birth</span>
+            <select class="select" id="pBirthCountry"><option selected>India</option></select>
+          </label>
+          <label class="field">
+            <span class="field-label">State of birth</span>
+            <select class="select" id="pBirthState"><option selected>Maharashtra</option></select>
+          </label>
+          <label class="field">
+            <span class="field-label">City of birth</span>
+            <input class="input" id="pBirthCity" value="Pune" />
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
           <span class="head-icon"><span class="icon" data-icon="pin"></span></span>
           <div>
             <h2>Addresses</h2>
@@ -1327,14 +1364,14 @@
           <label class="field"><span class="field-label">Address line 1</span><input class="input" id="pAddr1" value="House 12, Sector 14" /></label>
           <label class="field"><span class="field-label">Address line 2</span><input class="input" id="pAddr2" value="Old Town" /></label>
           <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" id="pPin" value="411014" maxlength="6" /></label>
-          <label class="field"><span class="field-label">City</span>
-            <select class="select" id="pCity"><option selected>Pune</option><option>Mumbai</option></select>
+          <label class="field"><span class="field-label">Country</span>
+            <select class="select" id="pCountry"><option selected>India</option></select>
           </label>
           <label class="field"><span class="field-label">State</span>
             <select class="select" id="pState"><option selected>Maharashtra</option></select>
           </label>
-          <label class="field"><span class="field-label">Country</span>
-            <select class="select" id="pCountry"><option selected>India</option></select>
+          <label class="field"><span class="field-label">City</span>
+            <select class="select" id="pCity"><option selected>Pune</option><option>Mumbai</option></select>
           </label>
         </div>
 
@@ -1343,14 +1380,14 @@
           <label class="field"><span class="field-label">Address line 1</span><input class="input" id="cAddr1" value="204, Crystal Heights, Baner Road" /></label>
           <label class="field"><span class="field-label">Address line 2</span><input class="input" id="cAddr2" value="Near Balewadi Stadium" /></label>
           <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" id="cPin" value="411045" maxlength="6" /></label>
-          <label class="field"><span class="field-label">City</span>
-            <select class="select" id="cCity"><option selected>Pune</option><option>Mumbai</option><option>Bengaluru</option></select>
+          <label class="field"><span class="field-label">Country</span>
+            <select class="select" id="cCountry"><option selected>India</option></select>
           </label>
           <label class="field"><span class="field-label">State</span>
             <select class="select" id="cState"><option selected>Maharashtra</option><option>Karnataka</option></select>
           </label>
-          <label class="field"><span class="field-label">Country</span>
-            <select class="select" id="cCountry"><option selected>India</option></select>
+          <label class="field"><span class="field-label">City</span>
+            <select class="select" id="cCity"><option selected>Pune</option><option>Mumbai</option><option>Bengaluru</option></select>
           </label>
         </div>
 
@@ -1368,14 +1405,14 @@
           <label class="field"><span class="field-label">Address line 1</span><input class="input" id="eaAddr1" value="35, MG Road" /></label>
           <label class="field"><span class="field-label">Address line 2</span><input class="input" id="eaAddr2" value="Camp Area" /></label>
           <label class="field"><span class="field-label">Pincode</span><input class="input is-mono" id="eaPin" value="411001" maxlength="6" /></label>
-          <label class="field"><span class="field-label">City</span>
-            <select class="select" id="eaCity"><option selected>Pune</option></select>
+          <label class="field"><span class="field-label">Country</span>
+            <select class="select" id="eaCountry"><option selected>India</option></select>
           </label>
           <label class="field"><span class="field-label">State</span>
             <select class="select" id="eaState"><option selected>Maharashtra</option></select>
           </label>
-          <label class="field"><span class="field-label">Country</span>
-            <select class="select" id="eaCountry"><option selected>India</option></select>
+          <label class="field"><span class="field-label">City</span>
+            <select class="select" id="eaCity"><option selected>Pune</option></select>
           </label>
         </div>
         <div class="sub-head">Emergency contact</div>
@@ -1383,8 +1420,20 @@
           <label class="field"><span class="field-label">Contact name</span><input class="input" id="ecName" value="Rohit Sharma" /></label>
           <label class="field">
             <span class="field-label">Mobile number</span>
-            <div class="field-wrap">
-              <span class="prefix">+91</span>
+            <div class="field-wrap" style="display:flex;gap:8px;align-items:center">
+              <select class="select" id="ecCountryCode" style="flex:none;width:118px">
+                <option selected>+91 India</option>
+                <option>+1 US</option>
+                <option>+1 Canada</option>
+                <option>+44 UK</option>
+                <option>+61 Australia</option>
+                <option>+65 Singapore</option>
+                <option>+971 UAE</option>
+                <option>+49 Germany</option>
+                <option>+33 France</option>
+                <option>+81 Japan</option>
+                <option>+86 China</option>
+              </select>
               <input class="input" id="ecMobile" value="98220 12345" />
             </div>
           </label>
@@ -1440,12 +1489,13 @@
             <p>Prior employment, with company, role, dates and description.</p>
           </div>
           <div class="spacer"></div>
+          <span class="badge b-indigo" id="expTotalDur">Total: 5y 6m</span>
           <button class="btn btn-secondary btn-sm only-supervisor" id="addExperience"><span class="icon" data-icon="plus"></span>Add experience</button>
         </div>
         <div class="table-wrap">
           <table class="table">
             <thead>
-              <tr><th>#</th><th>Company</th><th>Role</th><th>Start</th><th>End</th><th>Description</th><th></th></tr>
+              <tr><th>#</th><th>Company</th><th>Role</th><th>Start</th><th>End</th><th>Duration</th><th>Description</th><th></th></tr>
             </thead>
             <tbody id="expBody">
               <tr>
@@ -1454,6 +1504,7 @@
                 <td><input class="input" value="HR Generalist" /></td>
                 <td><input class="input" type="date" value="2017-07-01" /></td>
                 <td><input class="input" type="date" value="2021-01-31" /></td>
+                <td class="exp-dur">3y 6m</td>
                 <td><input class="input" value="Generalist covering payroll and recruitment" /></td>
                 <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
               </tr>
@@ -1463,6 +1514,7 @@
                 <td><input class="input" value="Recruitment Coordinator" /></td>
                 <td><input class="input" type="date" value="2015-06-01" /></td>
                 <td><input class="input" type="date" value="2017-06-30" /></td>
+                <td class="exp-dur">2y</td>
                 <td><input class="input" value="Volume hiring for plant and field roles" /></td>
                 <td class="actions"><button class="btn btn-danger btn-sm only-supervisor" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>
               </tr>
@@ -2042,7 +2094,7 @@
       </div>
     </section>
 
-    <!-- ================= FEEDBACK ================= -->
+    <!-- ================= FEEDBACK (commented out) =================
     <section class="panel" id="panel-feedback" data-tab-panel="feedback">
       <div class="section">
         <div class="section-head">
@@ -2153,6 +2205,7 @@
         </div>
       </div>
     </section>
+    -->
 
     <p class="footer-note">Easework · User Management prototype · All people and figures are illustrative demo data.</p>
   </main>
@@ -2540,7 +2593,7 @@ function updateSidebarForRole(role) {
 /* ---------------- tabs ---------------- */
 var CURRENT_TAB = 'basic';
 var EWAI_TABS = ['basic', 'roles', 'integrations'];
-var HR_TABS = ['personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc', 'feedback'];
+var HR_TABS = ['personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc']; // , 'feedback' (commented out)
 var ALL_TABS = EWAI_TABS.concat(HR_TABS);
 function activateTab(name) {
   if (!name) return;
@@ -2602,7 +2655,7 @@ function setRole(role) {
   if (pill) {
     if (role === 'employee') {
       pill.innerHTML = '<span class="icon" data-icon="user"></span>Employee view';
-      text.textContent = 'Viewing as Yash Sharma (employee). Salary and assets are read-only; raise feedback or accept supervisor responses.';
+      text.textContent = 'Viewing as Yash Sharma (employee). Salary and assets are read-only.';
     } else {
       pill.innerHTML = '<span class="icon" data-icon="shield"></span>Supervisor view';
       text.textContent = 'All tabs editable. You can maintain salary, assign assets, and manage any employee document.';
@@ -2660,6 +2713,52 @@ function renderYos() {
   if (yosInline) yosInline.textContent = pretty;
 }
 document.getElementById('joiningDate').addEventListener('change', renderYos);
+
+/* ---------------- experience duration (start → end) ---------------- */
+function expDurFrom(aStr, bStr) {
+  var a = new Date(aStr + 'T00:00:00');
+  var b = new Date(bStr + 'T00:00:00');
+  if (isNaN(a) || isNaN(b) || a > b) return null;
+  var years = b.getFullYear() - a.getFullYear();
+  var months = b.getMonth() - a.getMonth();
+  if (months < 0) { years--; months += 12; }
+  if (b.getDate() < a.getDate()) {
+    if (months === 0) { years--; months = 11; } else months--;
+  }
+  return { years: years, months: months };
+}
+function fmtExpDur(r) {
+  if (!r) return '—';
+  var s = '';
+  if (r.years) s += r.years + 'y ';
+  if (r.months) s += r.months + 'm';
+  return s.trim() || '0m';
+}
+function recomputeExp() {
+  var totalMonths = 0;
+  document.querySelectorAll('#expBody tr').forEach(function (tr) {
+    var dur = tr.querySelector('.exp-dur');
+    if (!dur) return;
+    var inputs = tr.querySelectorAll('input[type="date"]');
+    if (inputs.length >= 2) {
+      var r = expDurFrom(inputs[0].value, inputs[1].value);
+      dur.textContent = fmtExpDur(r);
+      if (r) totalMonths += r.years * 12 + r.months;
+    } else {
+      dur.textContent = '—';
+    }
+  });
+  var tot = document.getElementById('expTotalDur');
+  if (tot) {
+    var y = Math.floor(totalMonths / 12);
+    var m = totalMonths % 12;
+    var label = '';
+    if (y) label += y + 'y ';
+    if (m) label += m + 'm';
+    tot.textContent = 'Total: ' + (label.trim() || '0m');
+  }
+}
+document.getElementById('expBody').addEventListener('change', recomputeExp);
 
 /* ---------------- employee active / inactive toggle ---------------- */
 var EMP_ACTIVE = true;
@@ -3211,6 +3310,7 @@ function addRow(tbodyId, cells) {
 function removeRow(btn) {
   btn.closest('tr').remove();
   reIndexExp();
+  recomputeExp();
   toast('Row removed');
 }
 function reIndexExp() {
@@ -3218,10 +3318,10 @@ function reIndexExp() {
   var total = rows.length;
   rows.forEach(function (tr, i) { var td = tr.querySelector('td'); if (td) td.textContent = (total - i); });
 }
-function removeCard(btn) {
+/* function removeCard(btn) {  // feedback draft delete (commented out)
   btn.closest('.fb-card').remove();
   toast('Draft deleted');
-}
+} */
 document.getElementById('addExperience').addEventListener('click', function () {
   var idx = document.querySelectorAll('#expBody tr').length + 1;
   addRow('expBody', [
@@ -3230,10 +3330,12 @@ document.getElementById('addExperience').addEventListener('click', function () {
     '<td><input class="input" placeholder="Role"/></td>',
     '<td><input class="input" type="date"/></td>',
     '<td><input class="input" type="date"/></td>',
+    '<td class="exp-dur">—</td>',
     '<td><input class="input" placeholder="Job description"/></td>',
     '<td class="actions"><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><span class="icon" data-icon="trash"></span></button></td>'
   ].join(''));
   refreshIcons();
+  recomputeExp();
   toast('Experience row added (demo)');
 });
 document.getElementById('addEducation').addEventListener('click', function () {
@@ -3335,8 +3437,8 @@ function closeDoc() {
   document.getElementById('docOverlay').classList.remove('open');
 }
 
-/* ---------------- feedback ---------------- */
-function addFeedbackCard() {
+/* ================ feedback (commented out) ================ */
+/* function addFeedbackCard() {
   var card = document.createElement('article');
   card.className = 'fb-card';
   var now = new Date();
@@ -3397,7 +3499,7 @@ function acceptFeedback(btn, accepted) {
   toast(accepted ? 'Accepted by employee' : 'Declined by employee');
 }
 
-/* star rating */
+/* star rating
 document.body.addEventListener('click', function (e) {
   var star = e.target.closest('.stars .star');
   if (!star) return;
@@ -3410,6 +3512,7 @@ document.body.addEventListener('click', function (e) {
   });
   toast('Supervisor rating set to ' + score + ' / 5');
 });
+*/
 
 /* ================= EMPLOYEE PROFILE EDIT MODAL ================= */
 function escAttr(s) {
@@ -3426,12 +3529,12 @@ var PF_TABS = {
   salary:     { label: 'Salary & Tax',       icon: 'wallet',     title: 'Edit Salary & Tax',          sub: 'Update the monthly pay computation for the selected period.' },
   documents:  { label: 'Documents',          icon: 'file',       title: 'Manage Documents',           sub: 'Upload, view or download employee documents.' },
   assets:     { label: 'Assets',             icon: 'monitor',    title: 'Manage Assets',              sub: 'Assign and update company assets.' },
-  kyc:        { label: 'Bank & KYC',         icon: 'bank',       title: 'Edit Bank & KYC',            sub: 'Update identity, statutory and bank details.' },
-  feedback:   { label: 'Feedback',           icon: 'message',    title: 'Add / Edit Feedback',        sub: 'Raise messages, give supervisor feedback and ratings.' }
+  kyc:        { label: 'Bank & KYC',         icon: 'bank',       title: 'Edit Bank & KYC',            sub: 'Update identity, statutory and bank details.' }
+  // feedback: { label: 'Feedback',           icon: 'message',    title: 'Add / Edit Feedback',        sub: 'Raise messages, give supervisor feedback and ratings.' }
 };
-var PF_ORDER = ['basic', 'roles', 'integrations', 'personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc', 'feedback'];
+var PF_ORDER = ['basic', 'roles', 'integrations', 'personal', 'employment', 'skills', 'salary', 'documents', 'assets', 'kyc']; // , 'feedback' (commented out)
 var PF_ACTIVE = 'personal';
-var PF_FB_EDIT = null;
+// var PF_FB_EDIT = null; // feedback (commented out)
 var PF_ADD_MODE = false;
 
 function pfAdd() {
@@ -3447,7 +3550,7 @@ function pfOpen(tab) {
 }
 function pfClose() {
   document.getElementById('pfOverlay').classList.remove('open');
-  PF_FB_EDIT = null;
+  // PF_FB_EDIT = null; // feedback (commented out)
   PF_ADD_MODE = false;
 }
 function pfGo(tab) {
@@ -3497,7 +3600,7 @@ function pfApplyRoleGating() {
 function pfSave() {
   var fn = PF_SAVE[PF_ACTIVE];
   if (PF_ADD_MODE) {
-    if (PF_ACTIVE === 'feedback' && pfSaveFeedback() === false) return;
+    // if (PF_ACTIVE === 'feedback' && pfSaveFeedback() === false) return; // feedback (commented out)
     toast('Employee added (demo)');
     pfClose();
     return;
@@ -3569,6 +3672,14 @@ function pfBuildPersonal() {
   h += pfField('Blood group', pfSelectControl('pBlood'));
   h += '</div>';
 
+  h += '<div class="pf-subhead"><span class="icon" data-icon="calendar"></span>Birth details</div>';
+  h += '<div class="pf-grid">';
+  h += pfField('Date of birth', pfInputControl('pDob', { type: 'date' }));
+  h += pfField('Country of birth', pfSelectControl('pBirthCountry'));
+  h += pfField('State of birth', pfSelectControl('pBirthState'));
+  h += pfField('City of birth', pfInputControl('pBirthCity'));
+  h += '</div>';
+
   var groups = [
     { sub: 'Permanent address', line1: 'pAddr1', line2: 'pAddr2', pin: 'pPin', city: 'pCity', state: 'pState', country: 'pCountry' },
     { sub: 'Current address', line1: 'cAddr1', line2: 'cAddr2', pin: 'cPin', city: 'cCity', state: 'cState', country: 'cCountry' }
@@ -3579,9 +3690,9 @@ function pfBuildPersonal() {
     h += pfField('Address line 1', pfInputControl(g.line1));
     h += pfField('Address line 2', pfInputControl(g.line2));
     h += pfField('Pincode', pfInputControl(g.pin, { maxlength: '6' }));
-    h += pfField('City', pfSelectControl(g.city));
-    h += pfField('State', pfSelectControl(g.state));
     h += pfField('Country', pfSelectControl(g.country));
+    h += pfField('State', pfSelectControl(g.state));
+    h += pfField('City', pfSelectControl(g.city));
     h += '</div>';
   });
 
@@ -3590,14 +3701,14 @@ function pfBuildPersonal() {
   h += pfField('Address line 1', pfInputControl('eaAddr1'));
   h += pfField('Address line 2', pfInputControl('eaAddr2'));
   h += pfField('Pincode', pfInputControl('eaPin', { maxlength: '6' }));
-  h += pfField('City', pfSelectControl('eaCity'));
-  h += pfField('State', pfSelectControl('eaState'));
   h += pfField('Country', pfSelectControl('eaCountry'));
+  h += pfField('State', pfSelectControl('eaState'));
+  h += pfField('City', pfSelectControl('eaCity'));
   h += '</div>';
   h += '<div class="pf-subhead">Emergency contact</div>';
   h += '<div class="pf-grid">';
   h += pfField('Contact name', pfInputControl('ecName'));
-  h += pfField('Mobile number', '<div class="field-wrap"><span class="prefix">+91</span>' + pfInputControl('ecMobile') + '</div>');
+  h += pfField('Mobile number', '<div class="field-wrap" style="display:flex;gap:8px;align-items:center">' + pfSelectControl('ecCountryCode') + pfInputControl('ecMobile') + '</div>');
   h += pfField('Relation', pfSelectControl('ecRelation'));
   h += '</div>';
   return h;
@@ -3638,7 +3749,7 @@ function pfBuildEmployment() {
 
   h += '<div class="pf-subhead"><span class="icon" data-icon="layers"></span>Experience</div>';
   h += '<div class="table-wrap pf-table-scroll"><table class="table">' +
-    '<thead><tr><th>#</th><th>Company name</th><th>Role</th><th>Start</th><th>End</th><th>Job description</th><th></th></tr></thead>' +
+    '<thead><tr><th>#</th><th>Company name</th><th>Role</th><th>Start</th><th>End</th><th>Duration</th><th>Job description</th><th></th></tr></thead>' +
     '<tbody id="pfExpBody">' + (PF_ADD_MODE ? '' : document.getElementById('expBody').innerHTML) + '</tbody></table></div>';
   return h;
 }
@@ -3909,7 +4020,7 @@ function pfBuildKyc() {
   return h;
 }
 
-/* ---- Feedback ---- */
+/* ---- Feedback (commented out) ----
 function starButtons(score) {
   var h = '';
   for (var i = 1; i <= 5; i++) {
@@ -4044,6 +4155,7 @@ function pfSaveFeedback() {
   }
   return true;
 }
+---- Feedback (commented out) */
 
 /* ---- Basic Information ---- */
 function pfBuildBasic() {
@@ -4200,26 +4312,26 @@ var PF_BUILD = {
   salary: pfBuildSalary,
   documents: pfBuildDocuments,
   assets: pfBuildAssets,
-  kyc: pfBuildKyc,
-  feedback: pfBuildFeedback
+  kyc:        pfBuildKyc
+  // feedback: pfBuildFeedback // (commented out)
 };
 var PF_POST = {
   employment: pfPostEmployment,
-  documents: pfPostDocuments,
-  feedback: pfPostFeedback
+  documents: pfPostDocuments
+  // feedback: pfPostFeedback // (commented out)
 };
 var PF_SAVE = {
   basic: pfSaveBasic,
   roles: pfSaveRoles,
   integrations: pfSaveIntegrations,
   personal: function () { pfApply(); pfSyncPersonalHeader(); },
-  employment: function () { pfApply(); syncTable('expBody', 'pfExpBody'); renderYos(); },
+  employment: function () { pfApply(); syncTable('expBody', 'pfExpBody'); recomputeExp(); renderYos(); },
   skills: pfSaveSkills,
   salary: pfSaveSalary,
   documents: function () { },
   assets: pfSaveAssets,
-  kyc: pfApply,
-  feedback: pfSaveFeedback
+  kyc: pfApply
+  // feedback: pfSaveFeedback // (commented out)
 };
 
 /* esc closes the profile modal (or the doc viewer or payslip/add payment/upload doc modals) */
@@ -4250,6 +4362,7 @@ function refreshIcons() {
 var initUser = document.querySelector('.emp-item.selected');
 if (initUser) selectUser(initUser, true);
 renderYos();
+recomputeExp();
 calcSalary();
 renderSalaryView();
 renderPaymentHistory();
